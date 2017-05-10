@@ -17,17 +17,19 @@ export default class Router {
      * @param {String} route
      * @param {String} method
      * @param {Function} handler
+     * @param {?String} [name=null]
      *
      * @return {Object}
      *
      * @private
      */
-    _makeRoute(route, method, handler) {
+    _makeRoute(route, method, handler, name = null) {
         route = normalizePath(route);
         method = Array.isArray(method) ? method : [method]; // route can register for multiple methods
         const pattern = this._makeRoutePattern(route);
 
         return {
+            name,
             route,
             pattern,
             method,
@@ -79,6 +81,7 @@ export default class Router {
      * @param {String} route - route expression
      * @param {String|Array} method - HTTP method
      * @param {Function} handler - handler to respond to a given request
+     * @param {?String} [name=null] - route name
      *
      * @return {Router}
      *
@@ -89,8 +92,8 @@ export default class Router {
      *
      * @public
      */
-    route(route, method, handler) {
-        let constructedRoute = this._makeRoute(route, method, handler);
+    route(route, method, handler, name = null) {
+        let constructedRoute = this._makeRoute(route, method, handler, name);
         this._routes.push(constructedRoute);
 
         return this;
@@ -101,6 +104,7 @@ export default class Router {
      *
      * @param {String} route - route expression
      * @param {Function} handler - handler to respond to a given request
+     * @param {?String} [name=null]
      *
      * @return {Router}
      *
@@ -111,8 +115,8 @@ export default class Router {
      *
      * @public
      */
-    get(route, handler) {
-        this.route(route, ['GET', 'HEAD'], handler);
+    get(route, handler, name = null) {
+        this.route(route, ['GET', 'HEAD'], handler, name);
 
         return this;
     }
@@ -122,6 +126,7 @@ export default class Router {
      *
      * @param {String} route - route expression
      * @param {Function} handler - handler to respond to a given request
+     * @param {?String} [name=null] - route name
      *
      * @return {Router}
      *
@@ -132,8 +137,8 @@ export default class Router {
      *
      * @public
      */
-    post(route, handler) {
-        this.route(route, 'POST', handler);
+    post(route, handler, name = null) {
+        this.route(route, 'POST', handler, name);
 
         return this;
     }
@@ -143,6 +148,7 @@ export default class Router {
      *
      * @param {String} route - route expression
      * @param {Function} handler - handler to respond to a given request
+     * @param {?String} [name=null] - route name
      *
      * @return {Router}
      *
@@ -153,8 +159,8 @@ export default class Router {
      *
      * @public
      */
-    put(route, handler) {
-        this.route(route, 'PUT', handler);
+    put(route, handler, name = null) {
+        this.route(route, 'PUT', handler, name);
 
         return this;
     }
@@ -164,6 +170,7 @@ export default class Router {
      *
      * @param {String} route - route expression
      * @param {Function} handler - handler to respond to a given request
+     * @param {?String} [name=null] - route name
      *
      * @return {Router}
      *
@@ -174,8 +181,8 @@ export default class Router {
      *
      * @public
      */
-    patch(route, handler) {
-        this.route(route, 'PATCH', handler);
+    patch(route, handler, name = null) {
+        this.route(route, 'PATCH', handler, name);
 
         return this;
     }
@@ -185,6 +192,7 @@ export default class Router {
      *
      * @param {String} route - route expression
      * @param {Function} handler - handler to respond to a given request
+     * @param {?String} [name=null] - route name
      *
      * @return {Router}
      *
@@ -195,8 +203,8 @@ export default class Router {
      *
      * @public
      */
-    delete(route, handler) {
-        this.route(route, 'DELETE', handler);
+    delete(route, handler, name = null) {
+        this.route(route, 'DELETE', handler, name);
 
         return this;
     }
@@ -206,6 +214,7 @@ export default class Router {
      *
      * @param {String} route - route expression
      * @param {Function} handler - handler to respond to a given request
+     * @param {?String} [name=null] - route name
      *
      * @return {Router}
      *
@@ -216,8 +225,8 @@ export default class Router {
      *
      * @public
      */
-    options(route, handler) {
-        this.route(route, 'OPTIONS', handler);
+    options(route, handler, name = null) {
+        this.route(route, 'OPTIONS', handler, name);
 
         return this;
     }

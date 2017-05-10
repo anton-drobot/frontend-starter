@@ -2,11 +2,13 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 
 export default inject('router')(observer(function Router({ router }) {
-    const Component = router.component;
+    const resolvedRoute = router.route;
 
-    if (!Component) {
+    if (!resolvedRoute.handler) {
         return null;
     }
+
+    const Component = resolvedRoute.handler;
 
     return <Component />;
 }));

@@ -12,8 +12,8 @@ function registerRoutes() {
     const store = Store.getStore();
 
     Object.keys(ROUTES).forEach((pageName) => {
-        const { route, component } = ROUTES[pageName];
-        store.router.register(route, component);
+        const { name, route, component } = ROUTES[pageName];
+        store.router.register(route, component, name);
     });
 }
 

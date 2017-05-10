@@ -37,20 +37,21 @@ export default class RouterStore {
      *
      * @param {String} route
      * @param {Function} component - component that show
+     * @param {?String} name - route name
      */
     @action
-    register(route, component) {
-        this._router.route(route, ['GET', 'HEAD', 'POST'], component);
+    register(route, component, name = null) {
+        this._router.route(route, ['GET', 'HEAD', 'POST'], component, name);
     }
 
     /**
-     * Get resolved component.
+     * Get resolved route.
      *
-     * @return {?Function}
+     * @return {Object}
      */
     @computed
-    get component() {
-        return this._router.resolve(this.location.path, 'GET').handler || null;
+    get route() {
+        return this._router.resolve(this.location.path, 'GET');
     }
 
     /**
