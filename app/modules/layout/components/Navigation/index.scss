@@ -1,0 +1,30 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/variabels/fonts";
+
+@import "/app/modules/core/components/Link";
+
+.Navigation {
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+
+    &__listItem {
+        display: block;
+        margin-left: 0;
+        margin-right: 2.8rem;
+        float: left;
+        font-size: $font__size--l;
+        line-height: $font__lineHeight--l;
+        color: $color__black;
+
+        &:last-of-type {
+            margin-right: 0;
+        }
+    }
+
+    &__link {
+        @include Link($type: navigationItem);
+    }
+}

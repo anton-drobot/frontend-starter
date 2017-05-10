@@ -1,0 +1,91 @@
+@import "/app/styles/variabels/colors";
+
+@import "/app/modules/controls/components/Button";
+
+.ChoiceButton {
+    $this: &;
+
+    position: relative;
+    margin-left: 1px;
+
+    &:first-of-type {
+        margin-left: 0;
+
+        &::before {
+            display: none;
+        }
+
+        #{$this}__button {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+
+            &::before {
+                display: none;
+            }
+        }
+    }
+
+    &:last-of-type {
+        #{$this}__button {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+
+            &::after {
+                display: none;
+            }
+        }
+    }
+
+    &::before {
+        content: "";
+        display: block;
+        width: 1px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -1px;
+        background: $color__formAccent;
+    }
+
+    &_checked {
+        #{$this}__button {
+            @include Button_theme($type: button, $theme: checkedControl);
+
+            &::before,
+            &::after {
+                display: block;
+            }
+        }
+    }
+
+    &__button {
+        @include Button_theme($type: button, $theme: control);
+        @include Button_size($type: button, $size: mediumControl);
+
+        border-radius: 0;
+
+        &::before,
+        &::after {
+            content: "";
+            display: none;
+            width: 1px;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            z-index: 1;
+            background: #f3d426;
+        }
+
+        &::before {
+            left: -1px;
+        }
+
+        &::after {
+            right: -1px;
+        }
+    }
+
+    &__input {
+        display: none;
+    }
+}

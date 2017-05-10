@@ -1,0 +1,15 @@
+.Icon {
+    display: inline-block;
+    vertical-align: baseline;
+    background: transparent no-repeat;
+
+    &_logotype {
+        width: 136px;
+        height: 23px;
+    }
+
+    &_caret {
+        width: 8px;
+        height: 4px;
+    }
+}

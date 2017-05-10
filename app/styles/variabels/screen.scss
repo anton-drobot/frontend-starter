@@ -1,0 +1,13 @@
+$screen__fluid: true;
+
+$screen__width--default: 960px;
+$screen__width--min: 320px;
+$screen__width--max: 1240px;
+
+$screen__breakpoint--xs: 480px; // Smartphone
+$screen__breakpoint--s: 768px; // Tablet Portrait
+$screen__breakpoint--m: 1024px; // Tablet Landscape
+$screen__breakpoint--l: 1174px; // Desktop
+$screen__breakpoint--xl: 1400px; // Large Screen
+
+$wrapper__margin: 20px;

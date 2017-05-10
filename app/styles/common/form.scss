@@ -1,0 +1,57 @@
+@import "../variabels/fonts";
+
+label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: $font__family--default;
+    text-rendering: inherit;
+    outline: none;
+}
+
+/*
+[type="date"],
+[type="datetime"],
+[type="datetime-local"],
+[type="email"],
+[type="month"],
+[type="number"],
+[type="password"],
+[type="search"],
+[type="tel"],
+[type="text"],
+[type="time"],
+[type="url"],
+[type="week"],
+textarea {
+    @include placeholder();
+}
+*/
+
+[type="date"],
+[type="datetime"],
+[type="datetime-local"],
+[type="email"],
+[type="month"],
+[type="number"],
+[type="password"],
+[type="search"],
+[type="tel"],
+[type="text"],
+[type="time"],
+[type="url"],
+[type="week"],
+select {
+    min-height: 4rem;
+}
+
+textarea {
+    min-height: 16rem;
+    resize: vertical;
+}
+

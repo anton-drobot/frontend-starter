@@ -1,0 +1,86 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/mixins/linkTransition";
+
+@import "/app/modules/controls/components/Button";
+
+@mixin Link_underline($default, $hover, $active, $opacity: .4) {
+    border-bottom: 1px solid rgba($default, $opacity);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        border-bottom-color: rgba($hover, $opacity);
+    }
+
+    &:active {
+        border-bottom-color: rgba($active, $opacity);
+    }
+}
+
+@mixin Link_theme($type: link, $theme: default) {
+    @if ($type == link) {
+        @if ($theme == default) {
+            @include Link_underline($color__link--default, $color__link--hover, $color__link--active);
+
+            color: $color__link--default;
+
+            &:hover,
+            &:focus {
+                color: $color__link--hover;
+            }
+
+            &:active {
+                color: $color__link--active;
+            }
+        }
+
+        @if ($theme == black) {
+            @include Link_underline($color__black, $color__link--hover, $color__link--active);
+
+            color: $color__black;
+
+            &:hover,
+            &:focus {
+                color: $color__link--hover;
+            }
+
+            &:active {
+                color: $color__link--active;
+            }
+        }
+    }
+}
+
+@mixin Link($type: link, $theme: default, $size: medium) {
+    @include linkTransition;
+
+    text-decoration: none;
+
+    @if ($type == link) {
+        @include Link_theme($type, $theme);
+    }
+
+    @if ($type == navigationItem) {
+        border-bottom: none;
+        color: $color__gray;
+
+        &:hover,
+        &:focus {
+            color: $color__link--hover;
+        }
+
+        &:active {
+            color: $color__link--active;
+        }
+    }
+
+    @if ($type == button) {
+        @include Button($type, $theme, $size);
+    }
+}
+
+.Link {
+    @include Link($type: link, $theme: default);
+
+    outline: none;
+}

@@ -1,0 +1,20 @@
+@import "../variabels/screen";
+@import "../variabels/fonts";
+@import "../variabels/colors";
+
+html {
+    background-color: #fff;
+    color: $color__black;
+    font: 10px/1.35 $font__family--default;
+    text-rendering: geometricPrecision;
+}
+
+body {
+    @if ($screen__fluid == false) {
+        min-width: $screen__width--default + $wrapper__margin * 2;
+    }
+
+    background: #fff;
+    font-size: $font__size--m;
+    line-height: $font__lineHeight--m;
+}

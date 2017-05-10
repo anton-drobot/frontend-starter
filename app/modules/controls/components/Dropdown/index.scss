@@ -1,0 +1,49 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/variabels/durations";
+
+@import "/app/modules/controls/components/Popup";
+@import "/app/modules/controls/components/Button";
+
+.Dropdown {
+    $this: &;
+
+    position: relative;
+
+    &_opened {
+        #{$this}__caret {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__button {
+        @include Button_theme($type: button, $theme: control);
+        @include Button_size($type: button, $size: mediumControl);
+
+        padding-right: 1.6rem;
+
+        .Button__before {
+            margin-right: 4rem;
+        }
+
+        .Button__title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+        }
+    }
+
+    &__caret {
+        fill: $color__formAccent;
+        vertical-align: middle;
+        transition: transform $duration__fast ease-in-out;
+    }
+
+    &__popup {
+        @include Popup_theme($theme: normal);
+
+        min-width: 100%;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+}

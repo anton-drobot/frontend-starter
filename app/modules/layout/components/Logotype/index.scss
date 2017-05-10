@@ -1,0 +1,20 @@
+@import "/app/styles/variabels/colors";
+
+@import "/app/modules/core/components/Link";
+@import "/app/modules/core/components/Icon";
+
+.Logotype {
+    margin-top: 1px;
+
+    &__link {
+        display: block;
+        width: 136px;
+        height: 23px;
+        border-bottom: none;
+        color: $color__black;
+    }
+
+    &__image {
+        display: block;
+    }
+}

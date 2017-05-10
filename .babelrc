@@ -1,0 +1,15 @@
+{
+  "ignore": [
+    "node_modules/**/*"
+  ],
+  "presets": [
+    "react"
+  ],
+  "plugins": [
+    "transform-es2015-modules-commonjs",
+    "transform-async-to-generator",
+    "transform-decorators-legacy",
+    "transform-class-properties",
+    "transform-object-rest-spread"
+  ]
+}

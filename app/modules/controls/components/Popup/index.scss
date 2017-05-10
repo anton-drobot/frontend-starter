@@ -1,0 +1,65 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/variabels/durations";
+@import "/app/styles/variabels/zIndexes";
+
+@mixin Popup_theme($theme: normal) {
+    @if ($theme == normal) {
+        background: #fff;
+        border: 1px solid $color__formAccent;
+        box-shadow: 0 .5rem 1.4rem 0 rgba(0, 0, 0, .1);
+    }
+}
+
+@mixin Popup_position($primary, $secondary) {
+    @if ($primary == bottom) {
+        margin-top: .5rem;
+        top: 100%;
+        bottom: auto;
+    }
+
+    @if ($secondary == left) {
+        left: 0;
+        right: auto;
+    }
+}
+
+.Popup {
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    z-index: $zIndex__popup;
+    transform: scale3d(0.9, 0.9, 1) translate3d(0, -1rem, 0);
+    transition: opacity $duration__fast ease-in-out, transform $duration__fast ease-in-out, visibility 0s $duration__fast;
+
+    &_visible {
+        opacity: 1;
+        visibility: visible;
+        transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
+        transition: opacity $duration__fast ease-in-out, transform $duration__fast ease-in-out, visibility 0s 0s;
+    }
+
+    &_position_bottom-left {
+        @include Popup_position(bottom, left);
+    }
+}
+
+@keyframes Popup_open {
+    0% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+@keyframes Popup_close {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale3d(0.9, 0.9, 1);
+    }
+}

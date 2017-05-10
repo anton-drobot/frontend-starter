@@ -1,0 +1,32 @@
+@import "/app/styles/variabels/fonts";
+
+@import "/app/modules/controls/components/Dropdown";
+
+.Select {
+    &__item {
+        padding: .6rem 2.2rem;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: $font__size--l;
+        line-height: $font__lineHeight--l;
+
+        &:hover,
+        &:focus {
+            background: #f6f6f6;
+        }
+
+        &:active {
+            background: #efefef;
+        }
+
+        &_selected {
+            background: #efefef;
+        }
+    }
+
+    &__select {
+        display: none;
+    }
+}

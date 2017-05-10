@@ -1,0 +1,135 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/variabels/fonts";
+@import "/app/styles/mixins/linkTransition";
+@import "/app/styles/mixins/buttonReset";
+
+@import "/app/modules/core/components/Link";
+
+@mixin Button_theme($type: button, $theme: default) {
+    @if ($type == button) {
+        @if ($theme == default) {
+            background: #ffe44d;
+            border: 1px solid #ffe44d;
+            color: $color__black;
+
+            &:hover,
+            &:focus {
+                background: #f3d426;
+                border-color: #f3d426;
+                color: $color__black;
+            }
+
+            &:active {
+                background: #ecca0d;
+                border-color: #ecca0d;
+                color: $color__black;
+            }
+        }
+
+        @if ($theme == control) {
+            background: #fff;
+            border: 1px solid #fff;
+            color: $color__black;
+
+            &:hover,
+            &:focus {
+                background: #f6f6f6;
+                border-color: #f6f6f6;
+                color: $color__black;
+            }
+
+            &:active {
+                background: #efefef;
+                border-color: #efefef;
+                color: $color__black;
+            }
+        }
+
+        @if ($theme == checkedControl) {
+            background: #ffe44d;
+            border: 1px solid #ffe44d;
+            color: $color__black;
+
+            &:hover,
+            &:focus {
+                background: #f3d426;
+                border-color: #f3d426;
+                color: $color__black;
+            }
+
+            &:active {
+                background: #ecca0d;
+                border-color: #ecca0d;
+                color: $color__black;
+            }
+        }
+    }
+
+    @if ($type == link) {
+        @include Link($type, $theme);
+    }
+}
+
+@mixin Button_size($type: button, $size: medium) {
+    @if ($type == button) {
+        @if ($size == medium) {
+            padding: 1.3rem 3rem;
+            border-radius: 6px;
+            font-size: $font__size--l;
+            line-height: $font__lineHeight--l;
+
+            &__before {
+                margin-right: 1rem;
+            }
+
+            &__after {
+                margin-left: 1rem;
+            }
+        }
+
+        @if ($size == mediumControl) {
+            padding: 1.3rem 2.2rem;
+            border-radius: 6px;
+            font-size: $font__size--l;
+            line-height: $font__lineHeight--l;
+
+            &__before {
+                margin-right: 1rem;
+            }
+
+            &__after {
+                margin-left: 1rem;
+            }
+        }
+    }
+}
+
+@mixin Button($type: button, $theme: default, $size: medium) {
+    @include linkTransition;
+
+    display: inline-flex;
+    cursor: pointer;
+
+    @if ($type == button) {
+        @include Button_theme($type, $theme);
+        @include Button_size($type, $size);
+
+        text-align: center;
+        text-decoration: none;
+    }
+
+    @if ($type == link) {
+        @include buttonReset();
+        @include Link($type, $theme);
+    }
+}
+
+.Button {
+    @include Button($type: button, $theme: default, $size: medium);
+
+    &__before {}
+
+    &__after {}
+
+    &__title {}
+}
