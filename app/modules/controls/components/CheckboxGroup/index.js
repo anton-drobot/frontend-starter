@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import bindAll from 'lodash/bindAll';
 import { bem, bemMix } from 'app/utils/bem';
@@ -9,14 +10,14 @@ const b = bem('CheckboxGroup');
 
 export default class CheckboxGroup extends Component {
     static propTypes = {
-        className: React.PropTypes.string,
-        name: React.PropTypes.string.isRequired,
-        options: React.PropTypes.arrayOf(React.PropTypes.shape({
-            value: React.PropTypes.string.isRequired,
-            title: React.PropTypes.string.isRequired
+        className: PropTypes.string,
+        name: PropTypes.string.isRequired,
+        options: PropTypes.arrayOf(PropTypes.shape({
+            value: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired
         })).isRequired,
-        value: React.PropTypes.array,
-        onChange: React.PropTypes.func
+        value: PropTypes.array,
+        onChange: PropTypes.func
     };
 
     state = {

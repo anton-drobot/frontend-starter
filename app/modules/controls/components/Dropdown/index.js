@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import bindAll from 'lodash/bindAll';
 import { bem, bemMix } from 'app/utils/bem';
@@ -11,11 +12,11 @@ const b = bem('Dropdown');
 
 export default class Dropdown extends Component {
     static propTypes = {
-        className: React.PropTypes.string,
-        title: React.PropTypes.string.isRequired,
-        before: React.PropTypes.string,
-        opened: React.PropTypes.bool,
-        children: React.PropTypes.any
+        className: PropTypes.string,
+        title: PropTypes.string.isRequired,
+        before: PropTypes.string,
+        opened: PropTypes.bool,
+        children: PropTypes.any
     };
 
     state = {

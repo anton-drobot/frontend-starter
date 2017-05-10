@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import bindAll from 'lodash/bindAll';
 import { bem, bemMix } from 'app/utils/bem';
@@ -9,15 +10,15 @@ const b = bem('RadioGroup');
 
 export default class RadioGroup extends Component {
     static propTypes = {
-        className: React.PropTypes.string,
-        name: React.PropTypes.string.isRequired,
-        options: React.PropTypes.arrayOf(React.PropTypes.shape({
-            value: React.PropTypes.string.isRequired,
-            title: React.PropTypes.string.isRequired,
-            disable: React.PropTypes.bool
+        className: PropTypes.string,
+        name: PropTypes.string.isRequired,
+        options: PropTypes.arrayOf(PropTypes.shape({
+            value: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            disable: PropTypes.bool
         })).isRequired,
-        value: React.PropTypes.string,
-        onChange: React.PropTypes.func
+        value: PropTypes.string,
+        onChange: PropTypes.func
     };
 
     state = {
