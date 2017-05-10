@@ -1,5 +1,6 @@
-import React from 'react'
+import React from 'react';
 import { observer, inject } from 'mobx-react';
+
 import { bem, bemMix } from 'app/utils/bem';
 import { appUrl } from 'framework/utils/url';
 

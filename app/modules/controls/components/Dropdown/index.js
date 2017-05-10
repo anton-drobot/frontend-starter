@@ -7,8 +7,6 @@ import Icon from 'app/modules/core/components/Icon';
 import Popup from 'app/modules/controls/components/Popup';
 import Button from 'app/modules/controls/components/Button';
 
-import caret from './caret.svg';
-
 const b = bem('Dropdown');
 
 export default class Dropdown extends Component {
@@ -83,7 +81,7 @@ export default class Dropdown extends Component {
                     type="button"
                     onClick={this.onButtonClick}
                     before={before}
-                    after={<Icon glyph={caret} className={b('caret')} />}
+                    after={<Icon glyph="caret" className={b('caret')} />}
                 >
                     {title}
                 </Button>

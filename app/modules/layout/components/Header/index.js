@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+
 import { bem } from 'app/utils/bem';
 
 import Logotype from 'app/modules/layout/components/Logotype';
