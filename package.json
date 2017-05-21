@@ -4,12 +4,9 @@
   "description": "Frontend Starter Kit",
   "scripts": {
     "start": "NODE_PATH=. NODE_ENV=development node_modules/.bin/babel-node server.js --verbose",
-    "start:production": "NODE_PATH=. NODE_ENV=production npm run build && pm2 start build.js --name \"hellohome\"",
     "test": "npm run lint",
-    "build": "npm run build:server && npm run build:client",
-    "build:server": "node_modules/.bin/webpack --config webpack.server.js --progress",
-    "build:client": "node_modules/.bin/webpack --config webpack.client.js --progress",
-    "lint": "node_modules/.bin/eslint ."
+    "lint": "node_modules/.bin/eslint .",
+    "i18n": "node cli --namespace=\"export default\""
   },
   "author": "Anton Drobot",
   "license": "ISC",
@@ -22,6 +19,7 @@
     "koa-helmet": "^3.1.0",
     "koa-static": "^3.0.0",
     "lodash": "^4.17.4",
+    "messageformat": "^1.0.2",
     "mobx": "^3.1.9",
     "mobx-react": "^4.1.8",
     "ms": "^1.0.0",

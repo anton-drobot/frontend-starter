@@ -6,11 +6,22 @@ export default class Module {
         const translations = this.registerTranslations();
         const stores = this.registerStores();
 
-        stores.forEach((StoreClass) => {
-            Store.register(StoreClass);
+        Lang.register(this.moduleName(), translations);
+
+        Object.keys(stores).forEach((name) => {
+            Store.register(name, stores[name]);
         });
 
         this.register();
+    }
+
+    /**
+     * Module name.
+     *
+     * @return {String}
+     */
+    moduleName() {
+        return '';
     }
 
     /**
@@ -21,18 +32,18 @@ export default class Module {
     /**
      * Registers any stores.
      *
-     * @return {Array}
+     * @return {Object}
      */
     registerStores() {
-        return [];
+        return {};
     }
 
     /**
      * Register any translations.
      *
-     * @return {Array}
+     * @return {Object}
      */
     registerTranslations() {
-        return [];
+        return {};
     }
 }

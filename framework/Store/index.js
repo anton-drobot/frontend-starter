@@ -27,12 +27,12 @@ class Store {
     /**
      * Register store.
      *
+     * @param {String} name
      * @param {Function} StoreClass
      *
      * @public
      */
-    register(StoreClass) {
-        const name = lowerFirst(StoreClass.name.substring(0, StoreClass.name.indexOf('Store')));
+    register(name, StoreClass) {
         this._store[name] = new StoreClass();
     }
 }

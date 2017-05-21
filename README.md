@@ -62,3 +62,5 @@ $ NODE_ENV=production node_modules/.bin/webpack
 5. API.
 6. Поле зависимостей для модулей.
 7. Стайлгайды.
+8. Усовершенствовать интерфейс для CLI (https://github.com/mattallty/Caporal.js).
+9. Автоматический импорт переводов.

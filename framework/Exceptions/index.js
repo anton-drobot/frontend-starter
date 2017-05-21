@@ -11,6 +11,22 @@ export class RuntimeException extends NE.RuntimeException {
     }
 
     /**
+     * This exception is thrown when a locale not registered with any key.
+     *
+     * @param {String} locale
+     * @param {Number} [code=500]
+     *
+     * @return {RuntimeException}
+     */
+    static missingLocale(locale, code = this.defaultErrorCode) {
+        return new this(
+            `The locale ${locale} has not been found`,
+            code,
+            'E_MISSING_LOCALE'
+        );
+    }
+
+    /**
      * This exception is thrown when a route action is referenced inside a view
      * but not registered within the routes file.
      *

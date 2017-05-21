@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 
-export default function HomePage() {
-    return (
-        <div>Home Page</div>
-    );
+import Lang from 'framework/Lang';
+
+@observer
+export default class HomePage extends Component {
+    render() {
+        return (
+            <div>{Lang.get('demo.homePage', { name: 'Username' })}</div>
+        );
+    }
 }

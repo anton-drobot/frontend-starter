@@ -1,6 +1,14 @@
 import Store from 'framework/Store';
+import Lang from 'framework/Lang';
+
 import MODULES from 'app/modules';
 import ROUTES from 'app/routes';
+
+function setLocale() {
+    const store = Store.getStore();
+
+    Lang.setLocale(store.settings.locale);
+}
 
 function registerModules() {
     MODULES.forEach(function(Module) {
@@ -19,5 +27,6 @@ function registerRoutes() {
 
 export default function registerApp() {
     registerModules();
+    setLocale();
     registerRoutes();
 }
