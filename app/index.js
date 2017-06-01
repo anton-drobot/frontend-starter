@@ -3,7 +3,6 @@ import glob from 'glob';
 import Store from 'framework/Store';
 import Lang from 'framework/Lang';
 
-import MODULES from 'app/modules';
 import ROUTES from 'app/routes';
 
 function registerTranslations() {
@@ -25,7 +24,11 @@ function setLocale() {
 }
 
 function registerModules() {
-    MODULES.forEach(function(Module) {
+    const files = glob.sync('app/modules/*/index.js', { nodir: true });
+
+    files.forEach((path) => {
+        const moduleName = path.split('/')[2];
+        const Module = require(`app/modules/${moduleName}`).default;
         new Module();
     });
 }

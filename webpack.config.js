@@ -124,6 +124,7 @@ module.exports = {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV)
             }
         }),
+        new webpack.ContextReplacementPlugin(/app[\/\\]modules/, false),
         new ExtractTextPlugin('css/app.css')
         /*new UglifyJSPlugin({
             compress: {
