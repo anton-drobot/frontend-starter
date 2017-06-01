@@ -44,14 +44,19 @@ Object.keys(translations).forEach((moduleName) => {
         }
 
         const output = mf.compile(translations[moduleName][locale]).toString(namespace);
-        const filename = `app/modules/${moduleName}/lang/${locale}.js`;
+        const dir = path.resolve(process.cwd(), 'app', 'i18n', moduleName);
+        const filenamePath = path.resolve(dir, `${locale}.js`);
 
-        fs.writeFile(filename, output, function(err) {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+
+        fs.writeFile(filenamePath, output, function(err) {
             if (err) {
                 return console.log(err);
             }
 
-            console.log(`Build: ${filename}`);
+            console.log(`Build: ${filenamePath}`);
         });
     });
 });

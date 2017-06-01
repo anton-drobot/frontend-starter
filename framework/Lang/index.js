@@ -48,13 +48,14 @@ class Lang {
      * @example
      * Lang.get('app.base.title'); // Frontend Starter Kit
      * Lang.get('app.base.hello', { name: 'Alfred' }); // Hello, Alfred!
+     * Lang.get('app.base.description'); // If key did't exists: lang::app.base.description
      *
      * @public
      */
     get(key, params = {}) {
         const compiledKey = get(this.translations(), key);
 
-        return compiledKey ? compiledKey(params) : key;
+        return compiledKey ? compiledKey(params) : `lang::${key}`;
     }
 
     /**
@@ -62,17 +63,23 @@ class Lang {
      *
      * @todo merge translations if keys exists.
      *
-     * @param {String} name
-     * @param {Object} translations
+     * @param {String} name - module name
+     * @param {String} locale - locale
+     * @param {Object} translations - translations object
      */
-    register(name, translations) {
-        Object.keys(translations).forEach((locale) => {
+    register(name, locale, translations) {
+        if (!this._translations[locale]) {
+            this._translations[locale] = {};
+        }
+
+        this._translations[locale][name] = translations;
+        /*Object.keys(translations).forEach((locale) => {
             if (!this._translations[locale]) {
                 this._translations[locale] = {};
             }
 
             this._translations[locale][name] = translations[locale];
-        });
+        });*/
     }
 }
 
