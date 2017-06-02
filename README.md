@@ -62,5 +62,5 @@ $ NODE_ENV=production node_modules/.bin/webpack
 - [ ] API.
 - [ ] Поле зависимостей для модулей.
 - [ ] Стайлгайды.
-- [ ] Усовершенствовать интерфейс для CLI (https://github.com/mattallty/Caporal.js).
+- [x] Усовершенствовать интерфейс для CLI (https://github.com/mattallty/Caporal.js).
 - [x] Автоматический импорт переводов.

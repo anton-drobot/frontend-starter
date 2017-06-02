@@ -1,20 +1,12 @@
-import glob from 'glob';
-
 import Store from 'framework/Store';
 import Lang from 'framework/Lang';
 
 import ROUTES from 'app/routes';
+import translations from 'app/i18n';
+import modules from 'app/modules';
 
 function registerTranslations() {
-    const files = glob.sync('app/i18n/**/*.js', { nodir: true });
-
-    files.forEach((path) => {
-        // Destructing to "module" and "locale", because webpack throws warning
-        const locale = path.slice(path.lastIndexOf('/') + 1, -3);
-        const module = path.substring(path.lastIndexOf('/'), 0).split('/')[2];
-        const translations = require(`app/i18n/${module}/${locale}`).default;
-        Lang.register(module, locale, translations);
-    });
+    Lang.register(translations);
 }
 
 function setLocale() {
@@ -24,11 +16,7 @@ function setLocale() {
 }
 
 function registerModules() {
-    const files = glob.sync('app/modules/*/index.js', { nodir: true });
-
-    files.forEach((path) => {
-        const moduleName = path.split('/')[2];
-        const Module = require(`app/modules/${moduleName}`).default;
+    modules.forEach((Module) => {
         new Module();
     });
 }
@@ -43,8 +31,8 @@ function registerRoutes() {
 }
 
 export default function registerApp() {
-    registerTranslations();
     registerModules();
+    registerTranslations();
     setLocale();
     registerRoutes();
 }

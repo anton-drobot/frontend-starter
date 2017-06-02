@@ -61,25 +61,10 @@ class Lang {
     /**
      * Register translations.
      *
-     * @todo merge translations if keys exists.
-     *
-     * @param {String} name - module name
-     * @param {String} locale - locale
      * @param {Object} translations - translations object
      */
-    register(name, locale, translations) {
-        if (!this._translations[locale]) {
-            this._translations[locale] = {};
-        }
-
-        this._translations[locale][name] = translations;
-        /*Object.keys(translations).forEach((locale) => {
-            if (!this._translations[locale]) {
-                this._translations[locale] = {};
-            }
-
-            this._translations[locale][name] = translations[locale];
-        });*/
+    register(translations) {
+        this._translations = translations;
     }
 }
 
