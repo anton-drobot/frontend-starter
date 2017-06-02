@@ -60,6 +60,7 @@
     "style-loader": "^0.18.0",
     "uglifyjs-webpack-plugin": "^0.4.2",
     "webpack": "^2.6.1",
+    "webpack-external-svg-sprite": "git+https://github.com/anton-drobot/webpack-external-svg-sprite.git",
     "webpack-koa2-middleware": "^1.0.3"
   }
 }

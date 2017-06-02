@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const SvgStorePlugin = require('webpack-external-svg-sprite');
 
 // PostCSS, TODO: cssnano, node-css-mqpacker, postcss-sprites, lost
 const sassImportOnce = require('node-sass-import-once');
@@ -125,6 +126,11 @@ module.exports = {
             }
         }),
         new webpack.ContextReplacementPlugin(/app[\/\\]modules/, false),
+        new SvgStorePlugin({
+            directory: path.resolve(__dirname, 'app', 'modules'),
+            name: 'images/sprite.svg',
+            prefix: 'icon-',
+        }),
         new ExtractTextPlugin('css/app.css')
         /*new UglifyJSPlugin({
             compress: {
