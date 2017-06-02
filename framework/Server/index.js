@@ -2,7 +2,7 @@ import Koa from 'koa';
 import koaStatic from 'koa-static';
 import helmet from 'koa-helmet';
 import uuid from 'uuid/v4';
-//import bodyParser from 'koa-bodyparser';
+import bodyParser from 'koa-bodyparser';
 import CatLog from 'cat-log';
 import ms from 'ms';
 import bytes from 'bytes';
@@ -74,7 +74,7 @@ class Server {
             this._appInstance.use(koaStatic(this._helpers.staticPath, this._config.get('server.static.options')));
         }
 
-        //this._appInstance.use(bodyParser()); // TODO: сделать, чтобы работало
+        this._appInstance.use(bodyParser());
 
         this._appInstance.use(this.handle.bind(this));
     };
