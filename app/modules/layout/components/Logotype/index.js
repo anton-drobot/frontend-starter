@@ -29,4 +29,3 @@ export default inject('router')(observer(function Logotype(props) {
         <div {...restProps} className={bemMix(b(), className)}>{content}</div>
     );
 }));
-

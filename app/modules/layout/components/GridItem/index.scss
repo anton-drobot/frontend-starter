@@ -1,0 +1,37 @@
+@import "/app/styles/variabels/screen";
+@import "/app/styles/variabels/grid";
+
+// From bigger to smaller screen
+$screen-width: (
+        xl: $screen__breakpoint--xl,
+        l: $screen__breakpoint--l,
+        m: $screen__breakpoint--m,
+        s: $screen__breakpoint--s,
+        xs: $screen__breakpoint--xs,
+);
+
+.GridItem {
+    @for $i from 1 through $grid__columns {
+        &_offset-#{$i - 1} {
+            lost-offset: ($i - 1)/$grid__columns row $grid__gutter;
+        }
+
+        &_columns-#{$i} {
+            lost-column: $i/$grid__columns $i $grid__gutter !important;
+        }
+    }
+
+    @each $screen in map-keys($screen-width) {
+        @media (max-width: map-get($screen-width, $screen)) {
+            @for $i from 1 through $grid__columns {
+                &_offset#{to-upper-case($screen)}-#{$i - 1} {
+                    lost-offset: ($i - 1)/$grid__columns row $grid__gutter;
+                }
+
+                &_columns#{to-upper-case($screen)}-#{$i} {
+                    lost-column: $i/$grid__columns $i $grid__gutter !important;
+                }
+            }
+        }
+    }
+}

@@ -10,6 +10,7 @@ const postcssCalc = require('postcss-calc');
 const postcssFlexbugsFixes = require('postcss-flexbugs-fixes');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
+const lost = require('lost');
 
 const env = process.env.NODE_ENV;
 
@@ -94,6 +95,7 @@ module.exports = {
                             options: {
                                 plugins: function () {
                                     return [
+                                        lost,
                                         postcssCalc,
                                         postcssFlexbugsFixes,
                                         autoprefixer

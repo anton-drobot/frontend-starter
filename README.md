@@ -57,7 +57,7 @@ $ NODE_ENV=production node_modules/.bin/webpack
 
 - [x] Написать webpack-svg-spritesmith. (https://github.com/anton-drobot/webpack-external-svg-sprite)
 - [ ] Решить проблему с отображением ошибок 404, 500 и так далее.
-- [ ] Добавить адаптивную сетку.
+- [x] Добавить адаптивную сетку.
 - [ ] Написать тесты.
 - [ ] API.
 - [ ] Поле зависимостей для модулей.
