@@ -8,6 +8,7 @@ import Config from 'framework/Config';
 import Server from 'framework/Server';
 import Router from 'framework/Router';
 import Store from 'framework/Store';
+import Module from 'framework/Module';
 
 // Config
 import serverConfig from 'app/config/server';
@@ -17,15 +18,16 @@ import apiMethods from 'app/api';
 import App from 'app/modules/app/components/App';
 import layout from 'app/views/layout';
 
+// Register API Methods
+apiMethods.forEach((ApiMethod) => {
+    new ApiMethod();
+});
+
 /**
  * @todo Возвращать ошибку и статус 500
  */
 async function apiHandler(context) {
     context.type = 'application/json';
-
-    apiMethods.forEach((ApiMethod) => {
-        new ApiMethod();
-    });
 
     const resolvedMethod = Api.getMethods()
         .find((apiMethod) => apiMethod.name === context.params.method && apiMethod.method === context.method);
@@ -42,7 +44,13 @@ async function apiHandler(context) {
 }
 
 async function handler(context) {
-    await registerApp();
+    registerApp();
+
+    const modulesInstances = Module.getModules();
+
+    for (let i = 0; i < modulesInstances.length; i++) {
+        await modulesInstances[i].boot();
+    }
 
     const stores = Store.getStores();
     await stores.router.setLocation(context.href);
