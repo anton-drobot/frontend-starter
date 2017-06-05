@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 
-import Env from 'framework/Env';
 import Lang from 'framework/Lang';
 
 import { bem } from 'app/utils/bem';
@@ -15,12 +14,8 @@ const b = bem('HomePage');
 @inject('posts')
 @observer
 export default class HomePage extends Component {
-    componentWillMount() {
-        const { posts } = this.props;
-
-        if (Env.isClientSide) {
-            posts.getPosts();
-        }
+    static async onRequest(stores) {
+        stores.posts.setPosts(await stores.posts.getPosts());
     }
 
     render() {

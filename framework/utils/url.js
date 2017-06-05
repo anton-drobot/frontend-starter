@@ -75,7 +75,7 @@ export function buildQuery(data = {}, numericPrefix, argSeparator = '&') {
 /**
  * Returns absolute URL to the application.
  *
- * @param {String} path
+ * @param {String|Object} path
  * @param {?Object} [params=null]
  * @param {Object} [options]
  * @param {Boolean} [options.baseUrl=true]
@@ -88,6 +88,10 @@ export function buildQuery(data = {}, numericPrefix, argSeparator = '&') {
  * appUrl('http://other-site.tld/'); // http://other-site.tld/
  */
 export function appUrl(path, params = null, options = { baseUrl: true }) {
+    if (typeof path === 'object' && path.route) {
+        path = path.route;
+    }
+
     let url = path;
 
     if (!isAbsoluteUrl(path)) {

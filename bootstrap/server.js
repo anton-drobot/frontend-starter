@@ -45,7 +45,7 @@ async function handler(context) {
     await registerApp();
 
     const stores = Store.getStores();
-    stores.router.setLocation(context.href);
+    await stores.router.setLocation(context.href);
 
     const markup = renderToString(
         <Provider {...stores}>

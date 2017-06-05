@@ -3,7 +3,7 @@ import Store from 'framework/Store';
 import Lang from 'framework/Lang';
 import Module from 'framework/Module';
 
-import ROUTES from 'app/routes';
+import RouterComponent from 'app/modules/router/components/Router';
 import translations from 'app/i18n';
 import modules from 'app/modules';
 
@@ -28,11 +28,7 @@ function registerModules() {
 
 function registerRoutes() {
     const stores = Store.getStores();
-
-    Object.keys(ROUTES).forEach((pageName) => {
-        const { name, route, component } = ROUTES[pageName];
-        stores.router.register(route, component, name);
-    });
+    stores.router.registerRoutes(RouterComponent.getRoutes());
 }
 
 export default async function registerApp() {

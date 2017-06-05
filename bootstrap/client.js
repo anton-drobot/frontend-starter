@@ -14,7 +14,7 @@ async function onLoad() {
     await registerApp();
 
     const stores = Store.getStores();
-    stores.router.setLocation(window.location.href);
+    await stores.router.setLocation(window.location.href);
 
     render(
         <Provider {...stores}>

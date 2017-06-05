@@ -17,12 +17,13 @@ export default class Link extends Component {
         bindAll(this, ['onClick']);
     }
 
-    onClick(e) {
+    async onClick(e) {
         const {
             router,
             to,
             replace = false,
-            onClick
+            onClick,
+            scrollTo = 0
         } = this.props;
 
         if (onClick) {
@@ -38,14 +39,9 @@ export default class Link extends Component {
             return;
         }
 
-        if (router.location.url === to) {
-            e.preventDefault();
-
-            return;
-        }
-
         e.preventDefault();
-        router.setLocation(to, replace);
+        await router.setLocation(to, replace);
+        window.scrollTo(scrollTo, 0);
     }
 
     render() {
@@ -58,6 +54,7 @@ export default class Link extends Component {
             rel,
             replace,
             onClick,
+            scrollTo = 0,
             ...props
         } = this.props;
 

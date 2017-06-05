@@ -8,6 +8,7 @@ import { createHistory } from 'app/utils/browserHistory';
 import { parseUrl, isAppUrl } from 'framework/utils/url';
 
 export default class RouterStore extends Store {
+    _routes = {};
     _router = new Router();
     _history = createHistory();
 
@@ -25,13 +26,17 @@ export default class RouterStore extends Store {
      * @param {Boolean} [replace=false] - need to store previous location state?
      */
     @action
-    setLocation(url, replace = false) {
+    async setLocation(url, replace = false) {
         this.location = parseUrl(url);
 
         if (replace) {
             this._history.replace(url);
         } else {
             this._history.push(url);
+        }
+
+        if (this.route.handler && this.route.handler.onRequest) {
+            await this.route.handler.onRequest(Store.getStores());
         }
     }
 
@@ -43,8 +48,18 @@ export default class RouterStore extends Store {
      * @param {?String} name - route name
      */
     @action
-    register(route, component, name = null) {
+    registerRoute(route, component, name = null) {
         this._router.route(route, ['GET', 'HEAD', 'POST'], component, name);
+    }
+
+    @action
+    registerRoutes(routes = {}) {
+        this._routes = routes;
+
+        Object.keys(routes).forEach((routeName) => {
+            const { route, component } = routes[routeName];
+            this.registerRoute(route, component, routeName);
+        });
     }
 
     /**
@@ -55,6 +70,10 @@ export default class RouterStore extends Store {
     @computed
     get route() {
         return this._router.resolve(this.location.path, 'GET');
+    }
+
+    is(route) {
+        return this.route.route === route.route;
     }
 
     /**
@@ -70,5 +89,9 @@ export default class RouterStore extends Store {
         }
 
         return Boolean(this._router.resolve(location, 'GET').handler);
+    }
+
+    getRoutes() {
+        return this._routes;
     }
 }

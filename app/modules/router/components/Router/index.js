@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 
-export default inject('router')(observer(function Router({ router }) {
-    const resolvedRoute = router.route;
+// Routes
+import HomePage from 'app/modules/demo/components/HomePage';
+import DemoPage from 'app/modules/demo/components/DemoPage';
+import NotFound from 'app/modules/demo/components/NotFound';
 
-    if (!resolvedRoute.handler) {
-        return null;
+@inject('router')
+@observer
+export default class Router extends Component {
+    static ROUTES = {
+        HOME: {
+            route: '/',
+            component: HomePage
+        },
+        DEMO: {
+            route: '/demo',
+            component: DemoPage
+        },
+        DEMO_ID: {
+            route: '/demo/:id',
+            component: DemoPage
+        },
+        NOT_FOUND: {
+            route: '/404',
+            component: NotFound
+        }
+        /*
+        INTERNAL_ERROR: {
+            name: Symbol('INTERNAL_ERROR'),
+            route: '/500',
+            component: NotFound
+        }
+        */
+    };
+
+    static getRoutes() {
+        return Router.ROUTES;
     }
 
-    const Component = resolvedRoute.handler;
+    render() {
+        const { router } = this.props;
+        const resolvedRoute = router.route;
 
-    return <Component />;
-}));
+        if (!resolvedRoute.handler) {
+            return null;
+        }
+
+        const Component = resolvedRoute.handler;
+
+        return <Component />;
+    }
+}
