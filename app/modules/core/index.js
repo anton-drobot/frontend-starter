@@ -1,7 +1,7 @@
 import Module from 'framework/Module';
 
 export default class CoreModule extends Module {
-    register() {}
+    boot() {}
 
     registerStores() {
         return {};

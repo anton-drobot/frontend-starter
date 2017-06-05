@@ -42,7 +42,7 @@ class FileDefinitions {
             ...this.imageExtensions(),
             ...this.videoExtensions(),
             ...this.audioExtensions()
-        ]
+        ];
     }
 
     /**

@@ -26,12 +26,13 @@ export default class Router {
     _makeRoute(route, method, handler, name = null) {
         route = normalizePath(route);
         method = Array.isArray(method) ? method : [method]; // route can register for multiple methods
-        const pattern = this._makeRoutePattern(route);
+        const { pattern, tokens } = this._makeRoutePattern(route);
 
         return {
             name,
             route,
             pattern,
+            tokens,
             method,
             handler
         };
@@ -47,7 +48,13 @@ export default class Router {
      * @private
      */
     _makeRoutePattern(route) {
-        return pathToRegexp(route, []);
+        const tokens = [];
+        const pattern = pathToRegexp(route, tokens);
+
+        return {
+            pattern,
+            tokens
+        };
     }
 
     /**
@@ -61,7 +68,24 @@ export default class Router {
      * @private
      */
     _returnMatchingRouteToUrl(path, method) {
-        return this._routes.find((route) => (route.pattern.test(path) && route.method.includes(method))) || {};
+        const route = this._routes.find((route) => (route.pattern.test(path) && route.method.includes(method))) || {};
+
+        if (route.handler) {
+            route.params = this._getRouteParams(route, path);
+        }
+
+        return route;
+    }
+
+    _getRouteParams(route, path) {
+        const paramsValues = route.pattern.exec(path);
+        const params = {};
+
+        route.tokens.forEach((token, index) => {
+            params[token.name] = paramsValues[index + 1];
+        });
+
+        return params;
     }
 
     /**

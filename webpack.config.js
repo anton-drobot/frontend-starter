@@ -16,7 +16,7 @@ const env = process.env.NODE_ENV;
 
 module.exports = {
     entry: {
-        app: path.join(__dirname, '/bootstrap/client.js')
+        app: ['babel-polyfill', path.join(__dirname, '/bootstrap/client.js')]
     },
     output: {
         publicPath: '/assets/',

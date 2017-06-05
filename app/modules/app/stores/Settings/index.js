@@ -1,7 +1,9 @@
 import { observable, action } from 'mobx';
-import Config from 'framework/Config';
 
-export default class SettingsStore {
+import Config from 'framework/Config';
+import Store from 'framework/Store';
+
+export default class SettingsStore extends Store {
     @observable locale = Config.get('app.locale');
 
     /**

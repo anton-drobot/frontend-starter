@@ -5,6 +5,7 @@
 ```ini
 HOST=localhost
 PORT=3000
+BACKEND_URL=https://jsonplaceholder.typicode.com/
 ```
 
 # Запуск dev версии
@@ -59,7 +60,7 @@ $ NODE_ENV=production node_modules/.bin/webpack
 - [ ] Решить проблему с отображением ошибок 404, 500 и так далее.
 - [x] Добавить адаптивную сетку.
 - [ ] Написать тесты.
-- [ ] API.
+- [x] API.
 - [ ] Поле зависимостей для модулей.
 - [ ] Стайлгайды.
 - [x] Усовершенствовать интерфейс для CLI (https://github.com/mattallty/Caporal.js).

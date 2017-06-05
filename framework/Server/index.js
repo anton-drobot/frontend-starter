@@ -123,8 +123,9 @@ class Server {
      *
      * @private
      */
-    _callRouteHandler(resolvedRoute, context) {
-        return resolvedRoute.handler(context);
+    async _callRouteHandler(resolvedRoute, context) {
+        context.params = resolvedRoute.params;
+        return await resolvedRoute.handler(context);
     }
 
     /**
@@ -139,13 +140,13 @@ class Server {
      *
      * @private
      */
-    _executeRoute(resolvedRoute, context) {
+    async _executeRoute(resolvedRoute, context) {
         if (!resolvedRoute.handler) {
             throw new HttpException(`Route not found ${context.method} ${context.url}`, 404);
         }
 
         return {
-            body: this._callRouteHandler(resolvedRoute, context),
+            body: await this._callRouteHandler(resolvedRoute, context),
             status: 200
         };
     }
@@ -205,8 +206,8 @@ class Server {
      *
      * @private
      */
-    _respond(context, respond) {
-        context.body = respond.body;
+    async _respond(context, respond) {
+        context.body = await respond.body;
         context.status = respond.status;
     }
 
@@ -226,12 +227,12 @@ class Server {
 
         try {
             const resolvedRoute = this._resolveRoute(context.url, context.method);
-            respond = await this._executeRoute(resolvedRoute, context)
+            respond = await this._executeRoute(resolvedRoute, context);
         } catch (error) {
             respond = await this._handleError(error, context);
         }
 
-        this._respond(context, respond);
+        await this._respond(context, respond);
     }
 
     getInstance() {

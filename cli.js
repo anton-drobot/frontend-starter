@@ -4,6 +4,7 @@ const prog = require('caporal');
 
 const i18nAction = require('./cli/i18n');
 const modulesAction = require('./cli/modules');
+const apiAction = require('./cli/api');
 
 prog
     .version('1.0.0')
@@ -30,9 +31,10 @@ prog
     )
     .action(i18nAction)
 
-
     .command('generate:modules', 'Generates modules file')
-    .action(modulesAction);
+    .action(modulesAction)
+
+    .command('generate:api', 'Generates api file')
+    .action(apiAction);
 
 prog.parse(process.argv);
-

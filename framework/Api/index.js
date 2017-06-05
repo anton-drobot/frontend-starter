@@ -2,37 +2,19 @@ import 'isomorphic-fetch';
 
 import Env from 'framework/Env';
 import { HttpException } from 'framework/Exceptions';
-import { appUrl, buildQuery } from 'framework/utils/url';
+import { buildQuery } from 'framework/utils/url';
 
-export default class Store {
-    static _stores = {};
+export default class Api {
+    static _apiMethods = [];
 
-    static getStores() {
-        return Store._stores;
+    method = 'GET';
+
+    static getMethods() {
+        return Api._apiMethods;
     }
 
-    static loadInitialState() {
-        if (Env.isClientSide) {
-            const initialState = window.__INITIAL_STATE__;
-
-            if (typeof initialState === 'object') {
-                Object.getOwnPropertyNames(initialState).forEach((propName) => {
-                    Object.assign(Store._stores[propName], initialState[propName]);
-                });
-            }
-        }
-    }
-
-    /**
-     * Register store.
-     *
-     * @param {String} name
-     * @param {Function} StoreClass
-     *
-     * @public
-     */
-    static register(name, StoreClass) {
-        Store._stores[name] = new StoreClass();
+    constructor() {
+        Api._apiMethods.push(this);
     }
 
     async request(path, method = 'GET', { query = null, data = null } = {}) {
@@ -44,7 +26,13 @@ export default class Store {
             path = `${path}?${buildQuery(query)}`;
         }
 
-        const url = appUrl(`api/${path}`);
+        let backendUrl = Env.get('BACKEND_URL');
+
+        if (backendUrl.lastIndexOf('/') === (backendUrl.length - 1)) {
+            backendUrl = backendUrl.slice(0, -1);
+        }
+
+        const url = `${backendUrl}/${path}`;
 
         const options = {
             method,

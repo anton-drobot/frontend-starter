@@ -1,7 +1,7 @@
 import Module from 'framework/Module';
 
 export default class LayoutModule extends Module {
-    register() {}
+    boot() {}
 
     registerStores() {
         return {};

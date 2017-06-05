@@ -1,18 +1,23 @@
+import Config from 'framework/Config';
 import Store from 'framework/Store';
 import Lang from 'framework/Lang';
+import Module from 'framework/Module';
 
 import ROUTES from 'app/routes';
 import translations from 'app/i18n';
 import modules from 'app/modules';
+
+// Config
+import appConfig from 'app/config/app';
 
 function registerTranslations() {
     Lang.register(translations);
 }
 
 function setLocale() {
-    const store = Store.getStore();
+    const stores = Store.getStores();
 
-    Lang.setLocale(store.settings.locale);
+    Lang.setLocale(stores.settings.locale);
 }
 
 function registerModules() {
@@ -22,17 +27,25 @@ function registerModules() {
 }
 
 function registerRoutes() {
-    const store = Store.getStore();
+    const stores = Store.getStores();
 
     Object.keys(ROUTES).forEach((pageName) => {
         const { name, route, component } = ROUTES[pageName];
-        store.router.register(route, component, name);
+        stores.router.register(route, component, name);
     });
 }
 
-export default function registerApp() {
+export default async function registerApp() {
+    Config.registerConfig('app', appConfig);
+
     registerModules();
     registerTranslations();
     setLocale();
     registerRoutes();
+
+    const modulesInstances = Module.getModules();
+
+    for (let i = 0; i < modulesInstances.length; i++) {
+        await modulesInstances[i].boot();
+    }
 }

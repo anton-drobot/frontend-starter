@@ -1,4 +1,4 @@
-import pathToRegexp from 'path-to-regexp'
+import pathToRegexp from 'path-to-regexp';
 import Config from 'framework/Config';
 import FileDefinitions from 'framework/FileDefinitions';
 
@@ -12,6 +12,65 @@ import FileDefinitions from 'framework/FileDefinitions';
 export function isAbsoluteUrl(url) {
     return (url.indexOf('http') === 0 || url.indexOf('//') === 0);
 }
+
+/**
+ * This function is convenient when encoding a string to be used in a query part of a URL, as a convenient way to pass
+ * variables to the next page.
+ *
+ * @param {String} string - the string to be encoded
+ *
+ * @returns {String}
+ */
+export function urlEncode(string) {
+    return encodeURIComponent(string)
+        .replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16)}`)
+        .replace(/%20/g, '+');
+}
+
+function _buildQueryHelper(key, value, argSeparator = '&') {
+    if (value === null) {
+        return;
+    } else if (value === true) {
+        value = '1';
+    } else if (value === false) {
+        value = '0';
+    }
+
+    if (typeof value === 'object') {
+        return Object.keys(value)
+            .map((nestedKey) => {
+                return _buildQueryHelper(`${key}[${nestedKey}]`, value[nestedKey], argSeparator = '&');
+            })
+            .join(argSeparator);
+    }
+
+    return `${urlEncode(key)}=${urlEncode(value)}`;
+}
+
+/**
+ * Generates a URL-encoded query string from the object.
+ *
+ * @param {Object} data - object with properties
+ * @param {String} [numericPrefix] - if numeric indices are used in the base object and this parameter is provided,
+ * it will be prepended to the numeric index for elements in the base object only.
+ * @param {String} [argSeparator] - symbol for separating arguments
+ *
+ * @returns {String}
+ */
+export function buildQuery(data = {}, numericPrefix, argSeparator = '&') {
+    return Object.keys(data)
+        .map((key) => {
+            const value = data[key];
+
+            if (numericPrefix && !isNaN(key)) {
+                key = String(numericPrefix) + key;
+            }
+
+            return _buildQueryHelper(key, value, argSeparator);
+        })
+        .join(argSeparator);
+}
+
 
 /**
  * Returns absolute URL to the application.

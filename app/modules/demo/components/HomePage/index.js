@@ -1,16 +1,47 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 
+import Env from 'framework/Env';
 import Lang from 'framework/Lang';
+
+import { bem } from 'app/utils/bem';
 
 import Grid from 'app/modules/layout/components/Grid';
 import GridItem from 'app/modules/layout/components/GridItem';
+import Post from 'app/modules/demo/components/Post';
 
+const b = bem('HomePage');
+
+@inject('posts')
 @observer
 export default class HomePage extends Component {
+    componentWillMount() {
+        const { posts } = this.props;
+
+        if (Env.isClientSide) {
+            posts.getPosts();
+        }
+    }
+
     render() {
+        const { posts } = this.props;
+
         return (
-            <div>
+            <div className={b()}>
+                <Grid>
+                    {posts.posts.length ?
+                        posts.posts.map((post) => (
+                            <GridItem key={post.id} columns={4}>
+                                <Post post={post} />
+                            </GridItem>
+                        )) :
+                        (
+                            <GridItem columns={12}>
+                                {Lang.get('demo.loading')}
+                            </GridItem>
+                        )
+                    }
+                </Grid>
                 <Grid>
                     <GridItem columns={3} columnsL={8}>
                         {Lang.get('demo.homePage', { name: 'Username' })}

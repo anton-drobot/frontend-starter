@@ -1,9 +1,12 @@
 import Module from 'framework/Module';
+import PostsStore from 'app/modules/demo/stores/Posts';
 
 export default class DemoModule extends Module {
-    register() {}
+    boot() {}
 
     registerStores() {
-        return {};
+        return {
+            posts: PostsStore
+        };
     }
 }

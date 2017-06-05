@@ -1,10 +1,13 @@
 import { observable, action, computed } from 'mobx';
+
+import Store from 'framework/Store';
 import Config from 'framework/Config';
 import Router from 'framework/Router';
+
 import { createHistory } from 'app/utils/browserHistory';
 import { parseUrl, isAppUrl } from 'framework/utils/url';
 
-export default class RouterStore {
+export default class RouterStore extends Store {
     _router = new Router();
     _history = createHistory();
 
