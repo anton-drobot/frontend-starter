@@ -44,7 +44,7 @@ class Lang {
      * @param {String} key - configuration key to return value for
      * @param {Object} params - parameters
      *
-     * @return {String}
+     * @return {String|Array}
      *
      * @example
      * Lang.get('app.base.title'); // Frontend Starter Kit
@@ -60,25 +60,31 @@ class Lang {
             return `lang::${key}`;
         }
 
-        // Need to insert React Markup into string
-        const transpiledParams = {};
-        let hasReactParams = false;
+        const {
+            hasReactParams,
+            transformedParams
+        } = this._transformReactComponentsToStrings(params);
 
-        Object.keys(params).forEach((paramName) => {
-            if (React.isValidElement(params[paramName])) {
-                transpiledParams[paramName] = `$ReactComponent:${paramName}$`;
-                hasReactParams = true;
-            } else {
-                transpiledParams[paramName] = params[paramName];
-            }
-        });
-
-        const string = compiledKey(transpiledParams);
+        const string = compiledKey(transformedParams);
 
         if (!hasReactParams) {
             return string;
         }
 
+        return this._transformToArray(string, params);
+    }
+
+    /**
+     * Transform string to array to inject React Components.
+     *
+     * @param {String} string - translated string
+     * @param {Object} params - parameters
+     *
+     * @returns {Array}
+     *
+     * @private
+     */
+    _transformToArray(string, params) {
         return string
             .split(/\$(ReactComponent:.*?)\$/g)
             .map((part) => {
@@ -90,6 +96,34 @@ class Lang {
 
                 return params[paramName];
             });
+    }
+
+    /**
+     * Transform React Component to strings to insert React Markup into string.
+     *
+     * @param params - parameters
+     *
+     * @returns {{hasReactParams: Boolean, transformedParams: Object}}
+     *
+     * @private
+     */
+    _transformReactComponentsToStrings(params) {
+        let hasReactParams = false;
+        const transformedParams = {};
+
+        Object.keys(params).forEach((paramName) => {
+            if (React.isValidElement(params[paramName])) {
+                hasReactParams = true;
+                transformedParams[paramName] = `$ReactComponent:${paramName}$`;
+            } else {
+                transformedParams[paramName] = params[paramName];
+            }
+        });
+
+        return {
+            hasReactParams,
+            transformedParams
+        };
     }
 
     /**
