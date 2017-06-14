@@ -2,15 +2,6 @@
 
 @import "/app/styles/core";
 
-@import "/app/modules/layout/components/Header";
-@import "/app/modules/layout/components/Footer";
-
 @import "/app/modules/router/components/Router";
 
-.App {
-    &__content {}
-
-    &__wrapper {
-        @include wrapper;
-    }
-}
+.App {}
