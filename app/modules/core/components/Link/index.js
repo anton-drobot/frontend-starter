@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 
-import bindAll from 'lodash/bindAll'
+import bindAll from 'lodash/bindAll';
 import { bem, bemMix } from 'app/utils/bem';
 
 const b = bem('Link');

@@ -10,7 +10,6 @@ function varDump() {
     const padChar = ' ';
     const padVal = 4;
     let lgth = 0;
-    const i = 0;
     const _getFuncName = function (fn) {
         const name = (/\W*function\s+([\w$]+)\s*\(/)
             .exec(fn);

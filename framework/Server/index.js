@@ -12,8 +12,8 @@ import Helpers from '../Helpers';
 import { HttpException } from '../Exceptions';
 
 // Webpack
-import webpack from 'webpack'
-import webpackMiddleware from 'webpack-koa2-middleware'
+import webpack from 'webpack';
+import webpackMiddleware from 'webpack-koa2-middleware';
 import webpackConfig from 'webpack.config';
 
 class Server {

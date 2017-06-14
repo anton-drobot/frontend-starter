@@ -20,7 +20,7 @@ class Config {
      * @param {Object} config - configuration object
      */
     registerConfig(name, config = {}) {
-        this._config[name] = config
+        this._config[name] = config;
     }
 
     /**

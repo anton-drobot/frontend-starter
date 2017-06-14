@@ -5,15 +5,15 @@ export default {
          */
         contentSecurityPolicy: {
             directives: {
-                defaultSrc: ["'self'"],
+                defaultSrc: ['\'self\''],
                 sandbox: ['allow-forms', 'allow-same-origin', 'allow-scripts'],
-                objectSrc: ["'none'"],
+                objectSrc: ['\'none\''],
                 //reportUri: '/report-violation',
-                styleSrc: ["'self'", "'unsafe-inline'"],
+                styleSrc: ['\'self\'', '\'unsafe-inline\''],
                 scriptSrc: [
-                    "'self'",
+                    '\'self\'',
                     (request, response) => {
-                        return "'nonce-" + response.nonce + "'";
+                        return `'nonce-${response.nonce}'`;
                     }
                 ]
             }
