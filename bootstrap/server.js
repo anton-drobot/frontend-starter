@@ -1,6 +1,7 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Provider, useStaticRendering } from 'mobx-react';
+import CatLog from 'cat-log';
 
 import ApiMethod from 'framework/ApiMethod';
 import Env from 'framework/Env';
@@ -9,7 +10,7 @@ import Server from 'framework/Server';
 import Router from 'framework/Router';
 import Store from 'framework/Store';
 import Module from 'framework/Module';
-import { ApiException } from 'framework/Exceptions';
+import { normalizeError, ApiException } from 'framework/Exceptions';
 
 // Config
 import serverConfig from 'app/config/server';
@@ -19,59 +20,7 @@ import apiMethods from 'app/api';
 import App from 'app/modules/app/components/App';
 import layout from 'app/views/layout';
 
-/**
- * @todo Возвращать статус 500
- */
-async function apiHandler(context) {
-    context.type = 'application/json';
-
-    if (!context.params.method) {
-        const error = ApiException.missingMethodName();
-        context.status = error.status;
-
-        return { error: error.toJSON() };
-    }
-
-    const resolvedMethod = ApiMethod.getMethods()
-        .find((apiMethod) => apiMethod.name === context.params.method && apiMethod.method === context.method);
-
-    if (resolvedMethod) {
-        try {
-            return await resolvedMethod.handler(context);
-        } catch(err) {
-            const error = ApiException.invalidHandler(err.message);
-            context.status = error.status;
-
-            return { error: error.toJSON() };
-        }
-    }
-
-    const error = ApiException.methodNotFound(context.params.method);
-    context.status = error.status;
-
-    return { error: error.toJSON() };
-}
-
-async function handler(context) {
-    registerApp();
-
-    const modulesInstances = Module.getModules();
-
-    for (let i = 0; i < modulesInstances.length; i++) {
-        await modulesInstances[i].boot();
-    }
-
-    const stores = Store.getStores();
-    await stores.router.setLocation(context.href);
-
-    const markup = renderToString(
-        <Provider {...stores}>
-            <App />
-        </Provider>
-    );
-
-    return layout(context, markup);
-}
+const log = new CatLog('server');
 
 /**
  * Start the server.
@@ -84,6 +33,8 @@ export default function registerServer() {
         new ApiMethod();
     });
 
+    registerApp();
+
     const router = new Router();
     const server = new Server(router);
 
@@ -92,23 +43,50 @@ export default function registerServer() {
      */
     useStaticRendering(true);
 
-    router.match(['GET', 'POST'], '/api/:method?', apiHandler);
+    router.match(['GET', 'POST'], '/api/:name?', async (context) => {
+        context.type = 'application/json';
 
-    router.match(['GET', 'HEAD', 'POST'], '*', handler);
+        try {
+            if (!context.params.name) {
+                throw ApiException.missingMethodName(404);
+            }
 
-    /*
-    router.match(['GET', 'HEAD', 'POST'], '(^404|500)*', (context) => {
-        return handler(context, context.href);
+            const resolvedMethod = ApiMethod.resolveMethod(context.params.name, context.method);
+
+            if (!resolvedMethod.handler) {
+                throw ApiException.methodNotFound(context.params.name, 404);
+            }
+
+            return await resolvedMethod.handler(context);
+        } catch (error) {
+            const normalizedError = normalizeError(error);
+            context.status = normalizedError.status;
+            log.error(normalizedError);
+
+            return { error: error.toJSON() };
+        }
     });
 
-    router.any('/404', (context) => {
-        return handler(context, '/404');
-    });
+    router.match(['GET', 'HEAD', 'POST'], '*', async (context) => {
+        await Promise.all(Module.getModules().map(async (module) => {
+            await module.boot();
+        }));
 
-    router.any('/500', (context) => {
-        return handler(context, '/500');
+        const stores = Store.getStores();
+        await stores.router.setLocation(context.href);
+
+        if (!stores.router.isRegisteredRoute(context.url)) {
+            context.status = 404;
+        }
+
+        const markup = renderToString(
+            <Provider {...stores}>
+                <App />
+            </Provider>
+        );
+
+        return layout(context, markup);
     });
-    */
 
     server.listen(Env.get('HOST'), Env.get('PORT'));
 }

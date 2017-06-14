@@ -59,6 +59,33 @@ class LogicalException extends Error {
     }
 }
 
+/**
+ * Normalize error object by setting required parameters if they does not exists.
+ *
+ * @param {Error} error
+ *
+ * @return {Error}
+ *
+ * @private
+ */
+export function normalizeError(error) {
+    error.message = error.message || 'Internal server error';
+    error.status = error.status || 500;
+    error.code = error.code || 'E_INTERNAL_SERVER_ERROR';
+
+    if (!error.toJSON) {
+        error.toJSON = function () {
+            return {
+                message: this.message,
+                status: this.status,
+                code: this.code
+            };
+        };
+    }
+
+    return error;
+}
+
 export class RuntimeException extends LogicalException {
     /**
      * Default error status to be used for raising exceptions.
@@ -79,7 +106,7 @@ export class RuntimeException extends LogicalException {
      */
     static missingLocale(locale, status = this.defaultErrorStatus) {
         return new this(
-            `The locale ${locale} has not been found`,
+            `The locale "${locale}" has not been found`,
             status,
             'E_MISSING_LOCALE'
         );
@@ -96,7 +123,7 @@ export class RuntimeException extends LogicalException {
      */
     static missingRouteHandler(action, status = this.defaultErrorStatus) {
         return new this(
-            `The handler ${action} has not been found`,
+            `The handler "${action}" has not been found`,
             status,
             'E_MISSING_ROUTE_HANDLER'
         );
@@ -112,7 +139,7 @@ export class RuntimeException extends LogicalException {
      */
     static missingRoute(route, status = this.defaultErrorStatus) {
         return new this(
-            `The route ${route} has not been found`,
+            `The route "${route}" has not been found`,
             status,
             'E_MISSING_ROUTE'
         );
@@ -235,7 +262,7 @@ export class RuntimeException extends LogicalException {
      */
     static invalidSessionDriver(driver, status = this.defaultErrorStatus) {
         return new this(
-            `Unable to locate ${driver} session driver`,
+            `Unable to locate "${driver}" session driver`,
             status,
             'E_INVALID_SESSION_DRIVER'
         );
@@ -251,7 +278,7 @@ export class RuntimeException extends LogicalException {
      */
     static missingNamedMiddleware(name, status = this.defaultErrorStatus) {
         return new this(
-            `${name} is not registered as a named middleware`,
+            `"${name}" is not registered as a named middleware`,
             status,
             'E_MISSING_NAMED_MIDDLEWARE'
         );
@@ -314,22 +341,6 @@ export class ApiException extends LogicalException {
     }
 
     /**
-     * This exception is raised when an API method handler throws an error.
-     *
-     * @param {String} message
-     * @param {Number} [status=500]
-     *
-     * @return {ApiException}
-     */
-    static invalidHandler(message, status = this.defaultErrorStatus) {
-        return new this(
-            message,
-            status,
-            'E_INVALID_API_HANDLER'
-        );
-    }
-
-    /**
      * This exception is raised when an API method name is missing but expected to exist.
      *
      * @param {Number} [status=500]
@@ -354,7 +365,7 @@ export class ApiException extends LogicalException {
      */
     static methodNotFound(name, status = this.defaultErrorStatus) {
         return new this(
-            `${name} is not registered as an API method`,
+            `"${name}" is not registered as an API method`,
             status,
             'E_INVALID_API_METHOD'
         );

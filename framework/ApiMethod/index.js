@@ -14,6 +14,10 @@ export default class ApiMethod extends JsonApi {
         return ApiMethod._apiMethods;
     }
 
+    static resolveMethod(name, method) {
+        return ApiMethod.getMethods().find((apiMethod) => apiMethod.name === name && apiMethod.method === method) || {};
+    }
+
     constructor() {
         super();
         ApiMethod._apiMethods.push(this);

@@ -9,7 +9,7 @@ import bytes from 'bytes';
 import Env from '../Env';
 import Config from '../Config';
 import Helpers from '../Helpers';
-import { HttpException } from '../Exceptions';
+import { normalizeError, RuntimeException } from '../Exceptions';
 
 // Webpack
 import webpack from 'webpack';
@@ -94,121 +94,9 @@ class Server {
      */
     async _requestLogger(context, next) {
         const start = new Date();
-        this._log.verbose('Request %s %s', context.method, context.url);
+        this._log.verbose('--> %s %s', context.method, context.url);
         await next();
-        this._log.verbose('Response %s %s %s %s %s', context.method, context.url, context.status, ms(new Date() - start), bytes(context.response.length));
-    }
-
-    /**
-     * Find registered route.
-     *
-     * @param {String} url
-     * @param {String} method
-     *
-     * @return {Object}
-     *
-     * @private
-     */
-    _resolveRoute(url, method) {
-        return this._router.resolve(url, method);
-    }
-
-    /**
-     * Call route handler.
-     *
-     * @param {Object} resolvedRoute
-     * @param {Object} context
-     *
-     * @return {*}
-     *
-     * @private
-     */
-    async _callRouteHandler(resolvedRoute, context) {
-        context.params = resolvedRoute.params;
-        return await resolvedRoute.handler(context);
-    }
-
-    /**
-     * Responds to request by finding registered route or throwing 404 error.
-     *
-     * @param {Object} resolvedRoute
-     * @param {Object} context
-     *
-     * @throws {HttpException} If there is no registered route action
-     *
-     * @return {{body: *, status: number}}
-     *
-     * @private
-     */
-    async _executeRoute(resolvedRoute, context) {
-        if (!resolvedRoute.handler) {
-            throw new HttpException(`Route not found ${context.method} ${context.url}`, 404);
-        }
-
-        return {
-            body: await this._callRouteHandler(resolvedRoute, context),
-            status: 200
-        };
-    }
-
-    /**
-     * Normalize error object by setting required parameters if they does not exists.
-     *
-     * @param {Error} error
-     *
-     * @return {Error}
-     *
-     * @private
-     */
-    _normalizeError(error) {
-        error.status = error.status || 500;
-        error.message = error.message || 'Internal server error';
-
-        return error;
-    }
-
-    /**
-     * Handles any errors thrown with in a given request and process them.
-     *
-     * @param {Error} error
-     * @param {Object} context
-     *
-     * @return {{body: string, status: number}}
-     *
-     * @private
-     */
-    _handleError(error, context) {
-        error = this._normalizeError(error);
-        this._log.error(error.stack);
-
-        let  body = `[${error.status}] ${error.name}: ${error.message}`;
-        const resolvedRoute = this._resolveRoute(`/${error.status}`, context.method);
-
-        if (resolvedRoute.handler) {
-            try {
-                body = this._callRouteHandler(resolvedRoute, context);
-            } catch (error) {
-                this._log.error(error.stack);
-            }
-        }
-
-        return {
-            body,
-            status: error.status
-        };
-    }
-
-    /**
-     * Responds to a given HTTP request.
-     *
-     * @param {Object} context
-     * @param {Object} respond
-     *
-     * @private
-     */
-    async _respond(context, respond) {
-        context.body = await respond.body;
-        context.status = respond.status;
+        this._log.verbose('<-- %s %s %s %s %s', context.method, context.url, context.status, ms(new Date() - start), bytes(context.response.length));
     }
 
     /**
@@ -220,19 +108,28 @@ class Server {
      * const app = new Koa();
      * app.use(Server.handle.bind(Server));
      *
+     * @return {Promise.<void>}
+     *
      * @public
      */
     async handle(context) {
-        let respond;
+        const resolvedRoute = this._router.resolve(context.url, context.method);
 
         try {
-            const resolvedRoute = this._resolveRoute(context.url, context.method);
-            respond = await this._executeRoute(resolvedRoute, context);
-        } catch (error) {
-            respond = await this._handleError(error, context);
-        }
+            if (!resolvedRoute.handler) {
+                throw RuntimeException.missingRoute(context.url, 404);
+            }
 
-        await this._respond(context, respond);
+            /**
+             * Assign route path parameters to context.
+             */
+            context.params = resolvedRoute.params;
+            context.body = await resolvedRoute.handler(context);
+        } catch(error) {
+            const normalizedError = normalizeError(error);
+            context.status = normalizedError.status;
+            this._log.error(normalizedError);
+        }
     }
 
     getInstance() {
