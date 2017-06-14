@@ -11,6 +11,6 @@ export default class PostsStore extends Store {
     }
 
     async getPosts() {
-        return await this.get('posts');
+        return await this.apiGet('posts');
     }
 }

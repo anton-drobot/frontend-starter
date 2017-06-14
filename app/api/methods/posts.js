@@ -1,11 +1,11 @@
-import Api from 'framework/Api';
+import ApiMethod from 'framework/ApiMethod';
 
-export default class PostsApi extends Api {
+export default class PostsApi extends ApiMethod {
     name = 'posts';
 
     method = 'GET';
 
     async handler(context) {
-        return await this.get('posts');
+        return await this.apiGet('posts');
     }
 }

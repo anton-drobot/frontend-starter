@@ -2,7 +2,7 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Provider, useStaticRendering } from 'mobx-react';
 
-import Api from 'framework/Api';
+import ApiMethod from 'framework/ApiMethod';
 import Env from 'framework/Env';
 import Config from 'framework/Config';
 import Server from 'framework/Server';
@@ -29,7 +29,7 @@ apiMethods.forEach((ApiMethod) => {
 async function apiHandler(context) {
     context.type = 'application/json';
 
-    const resolvedMethod = Api.getMethods()
+    const resolvedMethod = ApiMethod.getMethods()
         .find((apiMethod) => apiMethod.name === context.params.method && apiMethod.method === context.method);
 
     if (resolvedMethod) {

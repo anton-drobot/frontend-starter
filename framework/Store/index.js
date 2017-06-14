@@ -1,10 +1,12 @@
 import 'isomorphic-fetch';
 
 import Env from 'framework/Env';
-import { HttpException } from 'framework/Exceptions';
-import { appUrl, buildQuery } from 'framework/utils/url';
+import JsonApi from 'framework/JsonApi';
+import { appUrl } from 'framework/utils/url';
 
-export default class Store {
+export default class Store extends JsonApi {
+    apiUrl = appUrl('api');
+
     static _stores = {};
 
     static getStores() {
@@ -33,45 +35,5 @@ export default class Store {
      */
     static register(name, StoreClass) {
         Store._stores[name] = new StoreClass();
-    }
-
-    async request(path, method = 'GET', { query = null, data = null } = {}) {
-        if (path.indexOf('/') === 0) {
-            path = path.substr(1);
-        }
-
-        if (query) {
-            path = `${path}?${buildQuery(query)}`;
-        }
-
-        const url = appUrl(`api/${path}`);
-
-        const options = {
-            method,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        };
-
-        if (data) {
-            options.body = JSON.stringify(data);
-        }
-
-        const response = await fetch(url, options);
-
-        if (!response.ok) {
-            throw new HttpException(response.statusText);
-        }
-
-        return await response.json();
-    }
-
-    async get(path, { query = null } = {}) {
-        return await this.request(path, 'GET', { query });
-    }
-
-    async post(path, { query = null, data = {} } = {}) {
-        return await this.request(path, 'POST', { query, data });
     }
 }
