@@ -19,21 +19,24 @@ export default class RouterStore extends Store {
      */
     @observable location = {};
 
+    @action
+    push(url) {
+        this._history.push(url);
+    }
+
+    @action
+    replace(url) {
+        this._history.replace(url);
+    }
+
     /**
      * Set location.
      *
      * @param {String} url
-     * @param {Boolean} [replace=false] - need to store previous location state?
      */
     @action
-    async setLocation(url, replace = false) {
+    async setLocation(url) {
         this.location = parseUrl(url);
-
-        if (replace) {
-            this._history.replace(url);
-        } else {
-            this._history.push(url);
-        }
 
         if (this.route.handler && this.route.handler.onRequest) {
             await this.route.handler.onRequest(Store.getStores());

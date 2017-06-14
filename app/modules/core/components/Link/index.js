@@ -40,7 +40,14 @@ export default class Link extends Component {
         }
 
         e.preventDefault();
-        await router.setLocation(to, replace);
+
+        if (replace) {
+            router.replace(to);
+        } else {
+            router.push(to);
+        }
+
+        await router.setLocation(to);
         window.scrollTo(scrollTo, 0);
     }
 

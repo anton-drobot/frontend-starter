@@ -14,11 +14,9 @@ import 'app/modules/app/components/App/index.scss';
 async function onLoad() {
     registerApp();
 
-    const modulesInstances = Module.getModules();
-
-    for (let i = 0; i < modulesInstances.length; i++) {
-        await modulesInstances[i].boot();
-    }
+    await Promise.all(Module.getModules().map(async (module) => {
+        await module.boot();
+    }));
 
     const stores = Store.getStores();
     await stores.router.setLocation(window.location.href);
@@ -34,3 +32,8 @@ async function onLoad() {
 }
 
 document.addEventListener('DOMContentLoaded', onLoad, true);
+
+window.addEventListener('popstate', async function () {
+    const stores = Store.getStores();
+    await stores.router.setLocation(window.location.href);
+}, false);
