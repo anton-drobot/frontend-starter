@@ -25,7 +25,6 @@
     "mobx": "^3.1.11",
     "mobx-react": "^4.2.1",
     "ms": "^2.0.0",
-    "node-exceptions": "^2.0.1",
     "path-to-regexp": "^1.7.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",

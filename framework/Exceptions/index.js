@@ -1,12 +1,71 @@
-import NE from 'node-exceptions';
+/**
+ * LogicalException is a neutral class extend the Error object.
+ *
+ * @class LogicalException
+ */
+class LogicalException extends Error {
+    constructor(message, status, code) {
+        super(message);
 
-export class RuntimeException extends NE.RuntimeException {
+        // extending Error is weird and does not propagate `message`
+        Object.defineProperty(this, 'message', {
+            configurable: true,
+            enumerable: false,
+            value: message,
+            writable: true
+        });
+
+        Object.defineProperty(this, 'name', {
+            configurable: true,
+            enumerable: false,
+            value: this.constructor.name,
+            writable: true
+        });
+
+        Object.defineProperty(this, 'status', {
+            configurable: true,
+            enumerable: false,
+            value: status || 500,
+            writable: true
+        });
+
+        Object.defineProperty(this, 'code', {
+            configurable: true,
+            enumerable: false,
+            value: code,
+            writable: true
+        });
+
+        if (Error.hasOwnProperty('captureStackTrace')) {
+            Error.captureStackTrace(this, this.constructor);
+
+            return;
+        }
+
+        Object.defineProperty(this, 'stack', {
+            configurable: true,
+            enumerable: false,
+            value: (new Error(message)).stack,
+            writable: true
+        });
+    }
+
+    toJSON() {
+        return {
+            message: this.message,
+            status: this.status,
+            code: this.code
+        };
+    }
+}
+
+export class RuntimeException extends LogicalException {
     /**
-     * Default error code to be used for raising exceptions.
+     * Default error status to be used for raising exceptions.
      *
      * @return {Number}
      */
-    static get defaultErrorCode() {
+    static get defaultErrorStatus() {
         return 500;
     }
 
@@ -14,14 +73,14 @@ export class RuntimeException extends NE.RuntimeException {
      * This exception is thrown when a locale not registered with any key.
      *
      * @param {String} locale
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static missingLocale(locale, code = this.defaultErrorCode) {
+    static missingLocale(locale, status = this.defaultErrorStatus) {
         return new this(
             `The locale ${locale} has not been found`,
-            code,
+            status,
             'E_MISSING_LOCALE'
         );
     }
@@ -31,14 +90,14 @@ export class RuntimeException extends NE.RuntimeException {
      * but not registered within the routes file.
      *
      * @param {String} action
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static missingRouteHandler(action, code = this.defaultErrorCode) {
+    static missingRouteHandler(action, status = this.defaultErrorStatus) {
         return new this(
             `The handler ${action} has not been found`,
-            code,
+            status,
             'E_MISSING_ROUTE_HANDLER'
         );
     }
@@ -47,14 +106,14 @@ export class RuntimeException extends NE.RuntimeException {
      * This exception is thrown when a route is referenced inside a view but not registered within the routes file.
      *
      * @param {String} route
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static missingRoute(route, code = this.defaultErrorCode) {
+    static missingRoute(route, status = this.defaultErrorStatus) {
         return new this(
             `The route ${route} has not been found`,
-            code,
+            status,
             'E_MISSING_ROUTE'
         );
     }
@@ -62,14 +121,14 @@ export class RuntimeException extends NE.RuntimeException {
     /**
      * This exceptions is raised when MAC is invalid when trying to encrypt data.
      *
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static invalidEncryptionMac(code = this.defaultErrorCode) {
+    static invalidEncryptionMac(status = this.defaultErrorStatus) {
         return new this(
             'The MAC is invalid',
-            code,
+            status,
             'E_INVALID_ENCRYPTION_MAC'
         );
     }
@@ -77,14 +136,14 @@ export class RuntimeException extends NE.RuntimeException {
     /**
      * This exception is raised when encryption payload is not valid.
      *
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static invalidEncryptionPayload(code = this.defaultErrorCode) {
+    static invalidEncryptionPayload(status = this.defaultErrorStatus) {
         return new this(
             'The payload is invalid',
-            code,
+            status,
             'E_INVALID_ENCRYPTION_PAYLOAD'
         );
     }
@@ -92,14 +151,14 @@ export class RuntimeException extends NE.RuntimeException {
     /**
      * This exception is raised when expected value is not a valid json object.
      *
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static malformedJSON(code = this.defaultErrorCode) {
+    static malformedJSON(status = this.defaultErrorStatus) {
         return new this(
             'The payload is not a json object',
-            code,
+            status,
             'E_MALFORMED_JSON'
         );
     }
@@ -107,14 +166,14 @@ export class RuntimeException extends NE.RuntimeException {
     /**
      * This exception is raised when an operation is attempted on a file that has been deleted.
      *
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static fileDeleted(code = this.defaultErrorCode) {
+    static fileDeleted(status = this.defaultErrorStatus) {
         return new this(
             'The file has already been deleted',
-            code,
+            status,
             'E_FILE_DELETED'
         );
     }
@@ -122,14 +181,14 @@ export class RuntimeException extends NE.RuntimeException {
     /**
      * This exception is raised when encryption class is not able to decrypt a given piece of data.
      *
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static decryptFailed(code = this.defaultErrorCode) {
+    static decryptFailed(status = this.defaultErrorStatus) {
         return new this(
             'Could not decrypt the data',
-            code,
+            status,
             'E_ENCRYPTION_DECRYPT_FAILED'
         );
     }
@@ -138,14 +197,14 @@ export class RuntimeException extends NE.RuntimeException {
      * This exception is raised when the encryption cipher is not supported
      * or app key length is not in-sync with given cipher.
      *
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static invalidEncryptionCipher(code = this.defaultErrorCode) {
+    static invalidEncryptionCipher(status = this.defaultErrorStatus) {
         return new this(
             'The only supported ciphers are AES-128-CBC and AES-256-CBC with the correct key lengths',
-            code,
+            status,
             'E_INVALID_ENCRYPTION_CIPHER'
         );
     }
@@ -154,14 +213,14 @@ export class RuntimeException extends NE.RuntimeException {
      * This exception is raised when app key is missing inside config/app.js file.
      *
      * @param {String} message
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static missingAppKey(message, code = this.defaultErrorCode) {
+    static missingAppKey(message, status = this.defaultErrorStatus) {
         return new this(
             message,
-            code,
+            status,
             'E_MISSING_APPKEY'
         );
     }
@@ -170,14 +229,14 @@ export class RuntimeException extends NE.RuntimeException {
      * This exception is raised when an unknown session driver is used.
      *
      * @param {String} driver
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static invalidSessionDriver(driver, code = this.defaultErrorCode) {
+    static invalidSessionDriver(driver, status = this.defaultErrorStatus) {
         return new this(
             `Unable to locate ${driver} session driver`,
-            code,
+            status,
             'E_INVALID_SESSION_DRIVER'
         );
     }
@@ -186,26 +245,26 @@ export class RuntimeException extends NE.RuntimeException {
      * This exception is raised when a named middleware is used but not registered.
      *
      * @param {String} name
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {RuntimeException}
      */
-    static missingNamedMiddleware(name, code = this.defaultErrorCode) {
+    static missingNamedMiddleware(name, status = this.defaultErrorStatus) {
         return new this(
             `${name} is not registered as a named middleware`,
-            code,
+            status,
             'E_MISSING_NAMED_MIDDLEWARE'
         );
     }
 }
 
-export class InvalidArgumentException extends NE.InvalidArgumentException {
+export class InvalidArgumentException extends LogicalException {
     /**
-     * Default error code to be used for raising exceptions.
+     * Default error status to be used for raising exceptions.
      *
      * @return {Number}
      */
-    static get defaultErrorCode() {
+    static get defaultErrorStatus() {
         return 500;
     }
 
@@ -213,14 +272,14 @@ export class InvalidArgumentException extends NE.InvalidArgumentException {
      * This exception is raised when a method parameter is missing but expected to exist.
      *
      * @param {String} message
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {InvalidArgumentException}
      */
-    static missingParameter(message, code = this.defaultErrorCode) {
+    static missingParameter(message, status = this.defaultErrorStatus) {
         return new this(
             message,
-            code,
+            status,
             'E_MISSING_PARAMETER'
         );
     }
@@ -229,17 +288,75 @@ export class InvalidArgumentException extends NE.InvalidArgumentException {
      * This exception is raised when a method parameter value is invalid.
      *
      * @param {String} message
-     * @param {Number} [code=500]
+     * @param {Number} [status=500]
      *
      * @return {InvalidArgumentException}
      */
-    static invalidParameter(message, code = this.defaultErrorCode) {
+    static invalidParameter(message, status = this.defaultErrorStatus) {
         return new this(
             message,
-            code,
+            status,
             'E_INVALID_PARAMETER'
         );
     }
 }
 
-export const HttpException = NE.HttpException;
+export class HttpException extends LogicalException {}
+
+export class ApiException extends LogicalException {
+    /**
+     * Default error status to be used for raising exceptions.
+     *
+     * @return {Number}
+     */
+    static get defaultErrorStatus() {
+        return 500;
+    }
+
+    /**
+     * This exception is raised when an API method handler throws an error.
+     *
+     * @param {String} message
+     * @param {Number} [status=500]
+     *
+     * @return {ApiException}
+     */
+    static invalidHandler(message, status = this.defaultErrorStatus) {
+        return new this(
+            message,
+            status,
+            'E_INVALID_API_HANDLER'
+        );
+    }
+
+    /**
+     * This exception is raised when an API method name is missing but expected to exist.
+     *
+     * @param {Number} [status=500]
+     *
+     * @return {ApiException}
+     */
+    static missingMethodName(status = this.defaultErrorStatus) {
+        return new this(
+            'API method name is missing',
+            status,
+            'E_MISSING_API_METHOD'
+        );
+    }
+
+    /**
+     * This exception is raised when an API method not found.
+     *
+     * @param {String} name
+     * @param {Number} [status=500]
+     *
+     * @return {ApiException}
+     */
+    static methodNotFound(name, status = this.defaultErrorStatus) {
+        return new this(
+            `${name} is not registered as an API method`,
+            status,
+            'E_INVALID_API_METHOD'
+        );
+    }
+}

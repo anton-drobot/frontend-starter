@@ -9,6 +9,7 @@ import Server from 'framework/Server';
 import Router from 'framework/Router';
 import Store from 'framework/Store';
 import Module from 'framework/Module';
+import { ApiException } from 'framework/Exceptions';
 
 // Config
 import serverConfig from 'app/config/server';
@@ -18,16 +19,18 @@ import apiMethods from 'app/api';
 import App from 'app/modules/app/components/App';
 import layout from 'app/views/layout';
 
-// Register API Methods
-apiMethods.forEach((ApiMethod) => {
-    new ApiMethod();
-});
-
 /**
- * @todo Возвращать ошибку и статус 500
+ * @todo Возвращать статус 500
  */
 async function apiHandler(context) {
     context.type = 'application/json';
+
+    if (!context.params.method) {
+        const error = ApiException.missingMethodName();
+        context.status = error.status;
+
+        return { error: error.toJSON() };
+    }
 
     const resolvedMethod = ApiMethod.getMethods()
         .find((apiMethod) => apiMethod.name === context.params.method && apiMethod.method === context.method);
@@ -36,11 +39,17 @@ async function apiHandler(context) {
         try {
             return await resolvedMethod.handler(context);
         } catch(err) {
-            return { error: 'internal_error', message: err.message };
+            const error = ApiException.invalidHandler(err.message);
+            context.status = error.status;
+
+            return { error: error.toJSON() };
         }
     }
 
-    return { error: 'internal_error', message: 'API method not found' };
+    const error = ApiException.methodNotFound(context.params.method);
+    context.status = error.status;
+
+    return { error: error.toJSON() };
 }
 
 async function handler(context) {
@@ -70,6 +79,11 @@ async function handler(context) {
 export default function registerServer() {
     Config.registerConfig('server', serverConfig);
 
+    // Register API Methods
+    apiMethods.forEach((ApiMethod) => {
+        new ApiMethod();
+    });
+
     const router = new Router();
     const server = new Server(router);
 
@@ -78,7 +92,7 @@ export default function registerServer() {
      */
     useStaticRendering(true);
 
-    router.match(['GET', 'POST'], '/api/:method', apiHandler);
+    router.match(['GET', 'POST'], '/api/:method?', apiHandler);
 
     router.match(['GET', 'HEAD', 'POST'], '*', handler);
 
