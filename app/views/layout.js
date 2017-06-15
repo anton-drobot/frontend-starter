@@ -19,6 +19,11 @@ export default function layout(context, markup) {
             </head>
             <body>
                 <div id="app">${markup}</div>
+                <script nonce="${context.res.nonce}">
+                    document.addEventListener('DOMContentLoaded', function () {
+                        window.timeCorrection = ${Date.now()} - Date.now();
+                    }, true);
+                </script>
                 <script src="${appUrl('/assets/js/app.js')}" defer></script>
             </body>
         </html>`;
