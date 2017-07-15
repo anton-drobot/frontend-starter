@@ -54,7 +54,7 @@ export default class Validator {
     _messages = {};
 
     /**
-     * The array of failure messages&
+     * The array of failure messages.
      *
      * @type {Array}
      * @private
@@ -77,6 +77,7 @@ export default class Validator {
      */
     validate(data) {
         this._data = data;
+        this._failureMessages = [];
 
         this._applyRecursively(this._rules, (rules, path) => {
             this._validateAttribute(path, get(data, path), rules);

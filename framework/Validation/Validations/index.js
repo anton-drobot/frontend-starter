@@ -3,7 +3,7 @@ import trim from 'lodash/trim';
 
 /**
  * @todo: Complete all validation functions
- * after (all), before (all), date (all), confirmed, distinct, inArray, ip, json, MIME (all),
+ * From Laravel: after (all), before (all), date (all), confirmed, distinct, inArray, ip, json, MIME (all),
  * regex, required (all, except "required"), timezone, url
  */
 export default class Validations {
@@ -195,13 +195,32 @@ export default class Validations {
      *
      * @return {Boolean}
      */
-    validateFilled(path, value)
-    {
+    validateFilled(path, value) {
         if (get(this._data, path) !== undefined) {
             return this.validateRequired(path, value);
         }
 
         return true;
+    }
+
+    /**
+     * Validate that an attribute is a function.
+     *
+     * @param {String} path
+     * @param {*} value
+     *
+     * @return {Boolean}
+     */
+    validateFunction(path, value) {
+        return Object.prototype.toString.call(value) === '[object Function]';
+    }
+
+    validateHasProperties(path, value, ...properties) {
+        if (!this.validateObject(path, value)) {
+            return false;
+        }
+
+        return properties.every((property) => value.hasOwnProperty(property));
     }
 
     /**
@@ -302,6 +321,18 @@ export default class Validations {
                 && !isNaN(value)
             )
         );
+    }
+
+    /**
+     * Validate that an attribute is an object.
+     *
+     * @param {String} path
+     * @param {*} value
+     *
+     * @return {Boolean}
+     */
+    validateObject(path, value) {
+        return Object.prototype.toString.call(value) === '[object Object]';
     }
 
     /**
