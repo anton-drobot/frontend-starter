@@ -1,6 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+import fs from 'fs';
+import path from 'path';
+import glob from 'glob';
+
+export const command = {
+    name: 'generate:api',
+    //description: 'Generates API file'
+};
+
+export function action(args, options, logger) {
+    const methods = getApiMethods();
+    generateResultFile(methods, logger);
+}
 
 function getApiMethods() {
     const methods = [];
@@ -22,15 +32,10 @@ function generateResultFile(methods, logger) {
     });
 
     output += '\nexport default [\n';
-    output += methods.reduce((result, module) => (result += `    ${module},\n`), '');
+    output += methods.reduce((result, module) => (result + `    ${module},\n`), '');
     output += '];\n';
 
     const outputFile = path.resolve(process.cwd(), 'app', 'api', 'index.js');
     fs.writeFileSync(outputFile, output);
     logger.info(`Generated: ${outputFile}`);
 }
-
-module.exports = function action(args, options, logger) {
-    const modules = getApiMethods();
-    generateResultFile(modules, logger);
-};

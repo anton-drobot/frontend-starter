@@ -1,7 +1,41 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
-const MessageFormat = require('messageformat');
+import fs from 'fs';
+import path from 'path';
+import glob from 'glob';
+import prog from 'caporal';
+import MessageFormat from 'messageformat';
+
+export const command = {
+    name: 'generate:i18n',
+    description: 'Generates internationalization files'
+};
+
+export const options = [
+    {
+        synopsis: '-n, --namespace <ns>',
+        description: 'The global object or modules format for the output JS. If ns does not contain a \'.\', ' +
+            'the output follows an UMD pattern. For module support, the values \'export default\' (ES6), ' +
+            '\'exports\' (CommonJS), and \'module.exports\' (node.js) are special.',
+        validation: ['export default', 'exports', 'module.exports'],
+        default: 'export default',
+        required: false
+    },
+    {
+        synopsis: '-p, --disable-plural-key-checks',
+        description: 'By default, messageformat.js throws an error when a statement uses a non-numerical key that ' +
+            'will never be matched as a pluralization category for the current locale. Use this argument to disable ' +
+            'the validation and allow unused plural keys.',
+        validation: prog.BOOL,
+        default: false,
+        required: false
+    }
+];
+
+export function action(args, options, logger) {
+    const files = getI18nFiles();
+    const i18n = makeI18nObjectFromFiles(files);
+    const generatedFiles = generateI18nFiles(i18n, options, logger);
+    generateResultFile(generatedFiles, logger);
+}
 
 /**
  * Get internationalization files.
@@ -77,19 +111,10 @@ function generateResultFile(generatedFiles, logger) {
     });
 
     output += '\nexport default {\n';
-    output += Object.keys(generatedFiles).reduce((result, locale) => (result += `    ${locale},\n`), '');
+    output += Object.keys(generatedFiles).reduce((result, locale) => (result + `    ${locale},\n`), '');
     output += '};\n';
 
     const outputFile = path.resolve(process.cwd(), 'app', 'i18n', 'index.js');
     fs.writeFileSync(outputFile, output);
     logger.info(`Generated: ${outputFile}`);
 }
-
-
-
-module.exports = function action(args, options, logger) {
-    const files = getI18nFiles();
-    const i18n = makeI18nObjectFromFiles(files);
-    const generatedFiles = generateI18nFiles(i18n, options, logger);
-    generateResultFile(generatedFiles, logger);
-};

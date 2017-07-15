@@ -1,6 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+import fs from 'fs';
+import path from 'path';
+import glob from 'glob';
+
+export const command = {
+    name: 'generate:modules',
+    description: 'Generates modules file'
+};
+
+export function action(args, options, logger) {
+    const modules = getModules();
+    generateResultFile(modules, logger);
+}
 
 function getModules() {
     const modulesFolder = path.resolve(process.cwd(), 'app', 'modules');
@@ -28,15 +38,10 @@ function generateResultFile(modules, logger) {
     });
 
     output += '\nexport default [\n';
-    output += modules.reduce((result, module) => (result += `    ${module},\n`), '');
+    output += modules.reduce((result, module) => (result + `    ${module},\n`), '');
     output += '];\n';
 
     const outputFile = path.resolve(process.cwd(), 'app', 'modules', 'index.js');
     fs.writeFileSync(outputFile, output);
     logger.info(`Generated: ${outputFile}`);
 }
-
-module.exports = function action(args, options, logger) {
-    const modules = getModules();
-    generateResultFile(modules, logger);
-};
