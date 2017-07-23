@@ -15,6 +15,7 @@ export function traits(...traitsList) {
 
 function _filterKeys(key) {
     const notAcceptable = ['constructor', 'prototype', 'arguments', 'caller', 'name', 'bind', 'call', 'apply', 'toString', 'length'];
+
     return !notAcceptable.includes(key);
 }
 

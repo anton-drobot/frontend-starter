@@ -74,6 +74,8 @@ export default class Validator {
      * returning true if we don't have messages.
      *
      * @param data
+     *
+     * @return {Validator}
      */
     validate(data) {
         this._data = data;
@@ -82,6 +84,8 @@ export default class Validator {
         this._applyRecursively(this._rules, (rules, path) => {
             this._validateAttribute(path, get(data, path), rules);
         });
+
+        return this;
     }
 
     /**
@@ -134,9 +138,9 @@ export default class Validator {
      */
     _setRules(initialRules) {
         this._rules = this._applyRecursively(initialRules, (value) => {
-            return (Array.isArray(value))
-                ? this._convertRule(value)
-                : value.split('|').map(this._convertRule);
+            return (Array.isArray(value)) ?
+                value.map(this._convertRule) :
+                value.split('|').map(this._convertRule);
         });
     }
 
@@ -169,8 +173,8 @@ export default class Validator {
      */
     _isValidatable(path, value, rule) {
         return (
-            this._presentOrRuleIsImplicit(path, value, rule)
-            && this._isNotNullIfMarkedAsNullable(path, rule)
+            this._presentOrRuleIsImplicit(path, value, rule) &&
+            this._isNotNullIfMarkedAsNullable(path, rule)
         );
     }
 
@@ -183,14 +187,14 @@ export default class Validator {
      *
      * @return {Boolean}
      */
-    _presentOrRuleIsImplicit(path, value, rule)
-    {
+    _presentOrRuleIsImplicit(path, value, rule) {
         if (Object.prototype.toString.call(get(this._data, path)) === '[object String]' && trim(value) === '') {
             return this._isImplicit(rule);
         }
 
         return this.validatePresent(path, value) || this._isImplicit(rule);
     }
+
     /**
      * Determine if a given rule implies the attribute is required.
      *
@@ -198,8 +202,7 @@ export default class Validator {
      *
      * @return {Boolean}
      */
-    _isImplicit(rule)
-    {
+    _isImplicit(rule) {
         return this._implicitRules.includes(rule);
     }
 
@@ -213,9 +216,8 @@ export default class Validator {
      *
      * @private
      */
-    _isNotNullIfMarkedAsNullable(path, rule)
-    {
-        if (this._implicitRules.includes(rule) || !this.hasRule(path, 'nullable')) {
+    _isNotNullIfMarkedAsNullable(path, rule) {
+        if (this._isImplicit(rule) || !this.hasRule(path, 'nullable')) {
             return true;
         }
 
@@ -270,9 +272,9 @@ export default class Validator {
         Object.keys(obj).forEach((key) => {
             const currentPath = path.concat(key);
 
-            newObj[key] = (Object.prototype.toString.call(obj[key]) === '[object Object]')
-                ? this._applyRecursivelyHelper(obj[key], callback, currentPath)
-                : callback(obj[key], currentPath.join('.'));
+            newObj[key] = (Object.prototype.toString.call(obj[key]) === '[object Object]') ?
+                this._applyRecursivelyHelper(obj[key], callback, currentPath) :
+                callback(obj[key], currentPath.join('.'));
         });
 
         return newObj;
