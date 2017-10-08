@@ -1,4 +1,8 @@
-import cluster from 'cluster';
+import start from 'bootstrap/server';
+
+start();
+
+/*import cluster from 'cluster';
 import os from 'os';
 import CatLog from 'cat-log';
 import registerServer from 'bootstrap/server';
@@ -24,4 +28,4 @@ if (process.env.NODE_ENV === 'production') {
     }
 } else {
     registerServer();
-}
+}*/

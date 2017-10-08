@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import { bem } from 'app/utils/bem';
+import { bem, mix } from 'app/utils/bem';
 
 const b = bem('GridItem');
 
@@ -14,8 +14,9 @@ const AVAILABLE_MODIFIERS = [
     'columnsXL', 'offsetXL'
 ];
 
-export default (observer(function GridItem(props) {
+function GridItem(props) {
     const {
+        className,
         children,
         ...restProps
     } = props;
@@ -24,11 +25,13 @@ export default (observer(function GridItem(props) {
 
     Object.keys(restProps).forEach((prop) => {
         if (AVAILABLE_MODIFIERS.includes(prop)) {
-            modifiers[`${prop}-${restProps[prop]}`] = true;
+            modifiers[prop] = restProps[prop];
         }
     });
 
     return (
-        <div className={b(modifiers)}>{children}</div>
+        <div className={mix(b(modifiers), className)}>{children}</div>
     );
-}));
+}
+
+export default observer(GridItem);

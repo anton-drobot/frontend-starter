@@ -19,7 +19,41 @@ $font__lineHeight--xl: 2.7rem;
 $font__size--xxl: 2.4rem;
 $font__lineHeight--xxl: 3.2rem;
 
-$font__size--xxxl: 1.6rem;
-$font__lineHeight--xxxl: 2.2rem;
+$font__size--xxxl: 2.8rem;
+$font__lineHeight--xxxl: 3.8rem;
 
 $font__marginBottom: $font__size--m;
+
+
+
+
+$fonts: (
+        xs: (
+                size: 1.2rem,
+                lineHeight: 1.6rem,
+        ),
+        s: (
+                size: 1.4rem,
+                lineHeight: 1.9rem,
+        ),
+        m: (
+                size: 1.6rem,
+                lineHeight: 2.2rem,
+        ),
+        l: (
+                size: 1.8rem,
+                lineHeight: 2.4rem,
+        ),
+        xl: (
+                size: 2rem,
+                lineHeight: 2.7rem,
+        ),
+        xxl: (
+                size: 2.4rem,
+                lineHeight: 3.2rem,
+        ),
+        xxxl: (
+                size: 2.8rem,
+                lineHeight: 3.8rem,
+        ),
+);

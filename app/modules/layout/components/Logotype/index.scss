@@ -1,22 +1,17 @@
 @import "/app/styles/variabels/colors";
 
-@import "/app/modules/core/components/Link";
-@import "/app/modules/core/components/Icon";
-
 .Logotype {
-    margin-top: 1px;
-
-    &__link {
+    &__link.Link {
         display: block;
-        width: 91px;
-        height: 91px;
+        width: 136px;
+        height: 23px;
         border-bottom: none;
         color: $color__black;
     }
 
-    &__image {
+    &__image.Icon {
         display: block;
-        width: 91px;
-        height: 91px;
+        width: 136px;
+        height: 23px;
     }
 }

@@ -8,3 +8,159 @@ $color__link--hover: #da2f0d;
 $color__link--active: #b90000;
 
 $color__formAccent: #cdd0d5;
+
+
+$colors: (
+        white: #fff,
+        black: #222,
+
+        link: (
+                default: (
+                        normal: #368cda,
+                        focus: #da2f0d,
+                        focusShadow: 0 0 0 2px #60b5ff,
+                        hover: #da2f0d,
+                        active: #b90000,
+                ),
+        ),
+
+        button: (
+                default: (
+                        normal: (
+                                border: #e0e1e2,
+                                background: #e0e1e2,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        focus: (
+                                border: #cacbcd,
+                                background: #cacbcd,
+                                color: #5a5a5a,
+                                shadow: 0 0 0 2px #60b5ff,
+                        ),
+                        hover: (
+                                border: #cacbcd,
+                                background: #cacbcd,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        active: (
+                                border: #babbbc,
+                                background: #babbbc,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        disabled: (
+                                border: #f1f2f2,
+                                background: #f1f2f2,
+                                color: #b5b5b5,
+                                shadow: none,
+                        ),
+                ),
+        ),
+
+        input: (
+                default: (
+                        normal: (
+                                border: #e0e1e2,
+                                background: #fff,
+                                color: #222,
+                                shadow: none,
+                        ),
+                        focus: (
+                                border: #cacbcd,
+                                background: #fff,
+                                color: #222,
+                                shadow: 0 0 0 2px #60b5ff,
+                        ),
+                        hover: (
+                                border: #cacbcd,
+                                background: #fff,
+                                color: #222,
+                                shadow: none,
+                        ),
+                        active: (
+                                border: #babbbc,
+                                background: #fff,
+                                color: #222,
+                                shadow: none,
+                        ),
+                        disabled: (
+                                border: #f1f2f2,
+                                background: #fff,
+                                color: #b5b5b5,
+                                shadow: none,
+                        ),
+                ),
+        ),
+
+        checkbox: (
+                default: (
+                        normal: (
+                                border: #e0e1e2,
+                                background: #e0e1e2,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        focus: (
+                                border: #cacbcd,
+                                background: #cacbcd,
+                                color: #5a5a5a,
+                                shadow: 0 0 0 2px #60b5ff,
+                        ),
+                        hover: (
+                                border: #cacbcd,
+                                background: #cacbcd,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        active: (
+                                border: #babbbc,
+                                background: #babbbc,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        disabled: (
+                                border: #f1f2f2,
+                                background: #f1f2f2,
+                                color: #b5b5b5,
+                                shadow: none,
+                        ),
+                ),
+        ),
+
+        radio: (
+                default: (
+                        normal: (
+                                border: #e0e1e2,
+                                background: #e0e1e2,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        focus: (
+                                border: #cacbcd,
+                                background: #cacbcd,
+                                color: #5a5a5a,
+                                shadow: 0 0 0 2px #60b5ff,
+                        ),
+                        hover: (
+                                border: #cacbcd,
+                                background: #cacbcd,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        active: (
+                                border: #babbbc,
+                                background: #babbbc,
+                                color: #5a5a5a,
+                                shadow: none,
+                        ),
+                        disabled: (
+                                border: #f1f2f2,
+                                background: #f1f2f2,
+                                color: #b5b5b5,
+                                shadow: none,
+                        ),
+                ),
+        ),
+);

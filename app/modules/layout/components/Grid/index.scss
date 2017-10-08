@@ -1,5 +1,7 @@
-@import "/app/styles/mixins/clearfix";
+@import "/app/styles/variabels/grid";
+
+@import "/app/styles/mixins/grid";
 
 .Grid {
-    @include clearfix;
+    @include row($gutter: $grid__gutter);
 }

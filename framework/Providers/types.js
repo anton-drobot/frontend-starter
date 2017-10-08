@@ -1,0 +1,11 @@
+export const CONFIG_PROVIDER = 'config';
+export const ENV_PROVIDER = 'env';
+export const LANG_PROVIDER = 'lang';
+export const LOGGER_PROVIDER = 'logger';
+export const MODULE_PROVIDER = 'module';
+export const MODULE_COLLECTION_PROVIDER = 'module-collection';
+export const ROUTER_PROVIDER = 'router';
+export const SERVER_PROVIDER = 'server';
+export const STORE_PROVIDER = 'store';
+export const STORE_COLLECTION_PROVIDER = 'store-collection';
+export const VALIDATOR_PROVIDER = 'validator';

@@ -1,39 +1,59 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { hydrate } from 'react-dom';
 import { Provider } from 'mobx-react';
 
-import Store from 'framework/Store';
+import Container from 'framework/IoC/Container';
+import Registrar from 'framework/IoC/Registrar';
 
-import registerApp from 'app';
-import App from 'app/modules/app/components/App';
-import Module from 'framework/Module';
+import { STORE_COLLECTION_PROVIDER } from 'framework/Providers/types';
 
-// Стили
-import 'app/modules/app/components/App/index.scss';
+import ClientLoggerProvider from 'framework/Providers/ClientLoggerProvider';
 
-async function onLoad() {
-    registerApp();
+import { providers, registerApp, onRequest } from 'bootstrap/app';
 
-    await Promise.all(Module.getModules().map(async (module) => {
-        await module.boot();
-    }));
+global.Container = new Container();
 
-    const stores = Store.getStores();
-    await stores.router.setLocation(window.location.href);
+new Registrar(global.Container)
+    .register([
+        ...providers,
+        ClientLoggerProvider
+    ])
+    .then(async () => {
+        const { default: App } = await import('app/modules/core/components/App');
 
-    render(
-        <Provider {...stores}>
-            <App />
-        </Provider>,
-        document.querySelector('#app')
-    );
+        const StoreCollection = global.Container.make(STORE_COLLECTION_PROVIDER);
 
-    document.removeEventListener('DOMContentLoaded', onLoad, true);
-}
+        /**
+         * Register application.
+         */
+        await registerApp();
+        await onRequest();
 
-document.addEventListener('DOMContentLoaded', onLoad, true);
+        const store = StoreCollection.store();
+        store.router.go(window.location.href, { replace: true });
 
-window.addEventListener('popstate', async function () {
-    const stores = Store.getStores();
-    await stores.router.setLocation(window.location.href);
-}, false);
+        hydrate(
+            <Provider {...store}>
+                <App />
+            </Provider>,
+            document.querySelector('#app')
+        );
+
+        //if (module.hot) {
+        //    module.hot.accept('app/modules/core/components/App', async () => {
+        //        render(
+        //            <Provider {...stores}>
+        //                <App />
+        //            </Provider>,
+        //            document.querySelector('#app')
+        //        );
+        //    });
+        //}
+
+        window.addEventListener('popstate', async () => {
+            store.router.setLocation(window.location.href);
+        }, false);
+    })
+    .catch((error) => {
+        console.error(error);
+    });

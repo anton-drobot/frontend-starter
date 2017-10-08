@@ -1,0 +1,124 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/variabels/fonts";
+
+@import "/app/styles/functions/get";
+
+@import "/app/styles/mixins/interactionEffects";
+
+@mixin Checkbox_size($size: m, $rootSelector: '.Checkbox') {
+    $fontSize: get($fonts, $size, size);
+    $lineHeight: get($fonts, $size, lineHeight);
+
+    #{$rootSelector}__indicator {
+        width: $lineHeight;
+        height: $lineHeight;
+        margin-right: .6rem;
+        border-radius: 4px;
+    }
+
+    #{$rootSelector}__icon {
+        width: 22px;
+        height: 18px;
+        top: 0;
+        left: 2px;
+    }
+
+    #{$rootSelector}__label {
+        font-size: $fontSize;
+        line-height: $lineHeight;
+    }
+}
+
+@mixin Checkbox_theme($theme: default, $rootSelector: '.Checkbox') {
+    #{$rootSelector}__input {
+        $normalBackground: get($colors, checkbox, $theme, normal, background);
+        $normalBorder: get($colors, checkbox, $theme, normal, border);
+        $normalColor: get($colors, checkbox, $theme, normal, color);
+        $normalShadow: get($colors, checkbox, $theme, normal, shadow);
+
+        $focusBackground: get($colors, checkbox, $theme, focus, background);
+        $focusBorder: get($colors, checkbox, $theme, focus, border);
+        $focusColor: get($colors, checkbox, $theme, focus, color);
+        $focusShadow: get($colors, checkbox, $theme, focus, shadow);
+
+        $hoverBackground: get($colors, checkbox, $theme, hover, background);
+        $hoverBorder: get($colors, checkbox, $theme, hover, border);
+        $hoverColor: get($colors, checkbox, $theme, hover, color);
+        $hoverShadow: get($colors, checkbox, $theme, hover, shadow);
+
+        $activeBackground: get($colors, checkbox, $theme, active, background);
+        $activeBorder: get($colors, checkbox, $theme, active, border);
+        $activeColor: get($colors, checkbox, $theme, active, color);
+        $activeShadow: get($colors, checkbox, $theme, active, shadow);
+
+        $disabledBackground: get($colors, checkbox, $theme, disabled, background);
+        $disabledBorder: get($colors, checkbox, $theme, disabled, border);
+        $disabledColor: get($colors, checkbox, $theme, disabled, color);
+        $disabledShadow: get($colors, checkbox, $theme, disabled, shadow);
+
+        & ~ #{$rootSelector}__indicator {
+            background: $normalBackground;
+            border: 1px solid $normalBorder;
+            color: $normalColor;
+            box-shadow: $normalShadow;
+        }
+
+        &:focus ~ #{$rootSelector}__indicator {
+            background: $focusBackground;
+            border-color: $focusBorder;
+            color: $focusColor;
+            box-shadow: $focusShadow;
+        }
+
+        &:hover ~ #{$rootSelector}__indicator {
+            background: $hoverBackground;
+            border-color: $hoverBorder;
+            color: $hoverColor;
+            box-shadow: $hoverShadow;
+        }
+
+        &:active ~ #{$rootSelector}__indicator {
+            background: $activeBackground;
+            border-color: $activeBorder;
+            color: $activeColor;
+            box-shadow: $activeShadow;
+        }
+
+        &[disabled] ~ #{$rootSelector}__indicator {
+            background: $disabledBackground;
+            border-color: $disabledBorder;
+            color: $disabledColor;
+            box-shadow: $disabledShadow;
+        }
+    }
+}
+
+@mixin Checkbox_base() {
+    display: inline-block;
+    cursor: pointer;
+
+    &_disabled {
+        cursor: default;
+    }
+
+    &__input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+
+    &__indicator {
+        @include interactionEffects();
+
+        display: inline-block;
+        position: relative;
+        vertical-align: bottom;
+        user-select: none;
+    }
+
+    &__icon {
+        position: absolute;
+    }
+
+    &__label {}
+}

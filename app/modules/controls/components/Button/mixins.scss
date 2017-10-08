@@ -1,0 +1,88 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/variabels/fonts";
+
+@import "/app/styles/functions/get";
+
+@import "/app/styles/mixins/interactionEffects";
+
+@mixin Button_base() {
+    @include interactionEffects();
+
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+
+    &[disabled] {
+        cursor: default;
+    }
+}
+
+@mixin Button_size($size: m) {
+    $fontSize: get($fonts, $size, size);
+    $lineHeight: get($fonts, $size, lineHeight);
+
+    font-size: $fontSize;
+    line-height: $lineHeight;
+}
+
+@mixin Button_theme($theme: default) {
+    $normalBackground: get($colors, button, $theme, normal, background);
+    $normalBorder: get($colors, button, $theme, normal, border);
+    $normalColor: get($colors, button, $theme, normal, color);
+    $normalShadow: get($colors, button, $theme, normal, shadow);
+
+    $focusBackground: get($colors, button, $theme, focus, background);
+    $focusBorder: get($colors, button, $theme, focus, border);
+    $focusColor: get($colors, button, $theme, focus, color);
+    $focusShadow: get($colors, button, $theme, focus, shadow);
+
+    $hoverBackground: get($colors, button, $theme, hover, background);
+    $hoverBorder: get($colors, button, $theme, hover, border);
+    $hoverColor: get($colors, button, $theme, hover, color);
+    $hoverShadow: get($colors, button, $theme, hover, shadow);
+
+    $activeBackground: get($colors, button, $theme, active, background);
+    $activeBorder: get($colors, button, $theme, active, border);
+    $activeColor: get($colors, button, $theme, active, color);
+    $activeShadow: get($colors, button, $theme, active, shadow);
+
+    $disabledBackground: get($colors, button, $theme, disabled, background);
+    $disabledBorder: get($colors, button, $theme, disabled, border);
+    $disabledColor: get($colors, button, $theme, disabled, color);
+    $disabledShadow: get($colors, button, $theme, disabled, shadow);
+
+    background: $normalBackground;
+    border: 1px solid $normalBorder;
+    color: $normalColor;
+    box-shadow: $normalShadow;
+
+    &:focus {
+        background: $focusBackground;
+        border-color: $focusBorder;
+        color: $focusColor;
+        box-shadow: $focusShadow;
+    }
+
+    &:hover {
+        background: $hoverBackground;
+        border-color: $hoverBorder;
+        color: $hoverColor;
+        box-shadow: $hoverShadow;
+    }
+
+    &:active {
+        background: $activeBackground;
+        border-color: $activeBorder;
+        color: $activeColor;
+        box-shadow: $activeShadow;
+    }
+
+    &[disabled] {
+        background: $disabledBackground;
+        border-color: $disabledBorder;
+        color: $disabledColor;
+        box-shadow: $disabledShadow;
+    }
+}

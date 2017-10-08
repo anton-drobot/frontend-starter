@@ -1,6 +1,42 @@
+import URL from 'url-parse';
 import pathToRegexp from 'path-to-regexp';
-import Config from 'framework/Config';
-import FileDefinitions from 'framework/FileDefinitions';
+
+import { allExtensions } from './fileDefinitions';
+
+import { CONFIG_PROVIDER } from '../Providers/types';
+
+/**
+ * Location interface.
+ *
+ * @typedef {Object} Location
+ *
+ * @property {String} protocol - The protocol scheme of the URL (e.g. "http:").
+ * @property {Boolean} slashes - A boolean which indicates whether the protocol is followed by two forward slashes ("//").
+ * @property {String} auth - Authentication information portion (e.g. "username:password").
+ * @property {String} username - Username of basic authentication.
+ * @property {String} password - Password of basic authentication.
+ * @property {String} host - Host name with port number.
+ * @property {String} hostname - Host name without port number.
+ * @property {String} port - Optional port number.
+ * @property {String} pathname - URL path.
+ * @property {Object|Boolean} query - arsed object containing query string, unless parsing is set to false.
+ * @property {String} hash - The "fragment" portion of the URL including the pound-sign ("#").
+ * @property {String} href - The full URL.
+ * @property {String} origin - The origin of the URL.
+ * @property {Function} set - Change parts of the URL.
+ * @property {Function} toString - Generates a full URL.
+ */
+
+/**
+ * Parse a URL and return its components.
+ *
+ * @param {String} url
+ *
+ * @return {Location}
+ */
+export function parse(url) {
+    return new URL(url, true);
+}
 
 /**
  * Checks if URL is absolute.
@@ -10,7 +46,47 @@ import FileDefinitions from 'framework/FileDefinitions';
  * @return {Boolean}
  */
 export function isAbsoluteUrl(url) {
-    return (url.indexOf('http') === 0 || url.indexOf('//') === 0);
+    return parse(url).host.length > 0;
+}
+
+/**
+ * Checks if URL is local application URL.
+ *
+ * @param {String} url
+ * @return {Boolean}
+ */
+export function isAppUrl(url) {
+    const Config = global.Container.make(CONFIG_PROVIDER);
+
+    return url.indexOf(Config.get('app.baseUrl')) === 0;
+}
+
+/**
+ * Returns absolute URL to the application.
+ *
+ * @param {String|Object} path
+ * @param {?Object} [params=null]
+ * @param {?Object} [options]
+ * @param {?Boolean} [options.baseUrl=true]
+ *
+ * @return {String}
+ *
+ * @example
+ * appUrl('/'); // http://site.tld/
+ * appUrl('/path/'); // http://site.tld/path/
+ * appUrl('http://other-site.tld/'); // http://other-site.tld/
+ */
+export function appUrl(path, params = null, { baseUrl = true } = {}) {
+    const Config = global.Container.make(CONFIG_PROVIDER);
+
+    if (params) {
+        const compile = pathToRegexp.compile(path);
+        path = compile(params);
+    }
+
+    path = normalizePath(path);
+
+    return new URL(path, baseUrl ? Config.get('app.baseUrl') : null).toString();
 }
 
 /**
@@ -71,106 +147,28 @@ export function buildQuery(data = {}, numericPrefix, argSeparator = '&') {
         .join(argSeparator);
 }
 
-
 /**
- * Returns absolute URL to the application.
- *
- * @param {String|Object} path
- * @param {?Object} [params=null]
- * @param {Object} [options]
- * @param {Boolean} [options.baseUrl=true]
- *
- * @return {String}
- *
- * @example
- * appUrl('/'); // http://site.tld/
- * appUrl('/path/'); // http://site.tld/path/
- * appUrl('http://other-site.tld/'); // http://other-site.tld/
- */
-export function appUrl(path, params = null, options = { baseUrl: true }) {
-    if (typeof path === 'object' && path.route) {
-        path = path.route;
-    }
-
-    let url = path;
-
-    if (!isAbsoluteUrl(path)) {
-        if (params) {
-            const compile = pathToRegexp.compile(path);
-            path = compile(params);
-        }
-
-        url = (options.baseUrl ? Config.get('app.baseUrl') : '') + normalizePath(path);
-    }
-
-    return url;
-}
-
-/**
- * Checks if URL is local application URL.
- *
- * @param {String} url
- * @return {Boolean}
- */
-export function isAppUrl(url) {
-    return url.indexOf(Config.get('app.baseUrl')) === 0;
-}
-
-/**
- * Parse a URL and return its components.
- *
- * url - given url
- * scheme - for example, http
- * host - with user, password, host and port
- * path
- * query - after the question mark ?
- * fragment - after the hashmark #
+ * Get extension if it exists.
  *
  * @param {String} url
  *
- * @return {{url: String, scheme: ?String, host: ?String, path: ?String, query: ?String, fragment: ?String}}
+ * @return {?String}
  */
-export function parseUrl(url) {
-    const regex = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
-    const result = regex.exec(url);
+export function getExtension(url) {
+    const path = parse(url).pathname;
 
-    return {
-        url,
-        scheme: result[2] || null,
-        host: result[4] || null,
-        path: result[5] || null,
-        query: result[7] || null,
-        fragment: result[9] || null
-    };
-}
-
-/**
- * Normalize route path. Add or delete slash before and after if it necessary.
- *
- * @param {String} path
- *
- * @return {String}
- */
-export function normalizePath(path) {
-    if (path.indexOf('/') !== 0) {
-        path = `/${path}`;
+    if (!path) {
+        return null;
     }
 
-    if (!isAvailableFile(path)) {
-        if (Config.get('app.trailingSlash') === true) {
-            if (path.lastIndexOf('/') !== (path.length - 1)) {
-                path = `${path}/`;
-            }
-        }
+    const basename = path.substr(path.lastIndexOf('/') + 1);
+    const dotIndex = basename.lastIndexOf('.');
 
-        if (Config.get('app.trailingSlash') === false) {
-            if (path.lastIndexOf('/') === (path.length - 1)) {
-                path = path.slice(0, -1);
-            }
-        }
+    if (dotIndex === -1) {
+        return null;
     }
 
-    return path;
+    return basename.substr(dotIndex + 1);
 }
 
 /**
@@ -187,29 +185,36 @@ export function isAvailableFile(url) {
         return false;
     }
 
-    return FileDefinitions.get('all').includes(extension);
+    return allExtensions().includes(extension);
 }
 
 /**
- * Get extension if it exists.
+ * Normalize route path. Add or delete slash before and after if it necessary.
  *
- * @param {String} url
+ * @param {String} path
  *
- * @return {?String}
+ * @return {String}
  */
-export function getExtension(url) {
-    const path = parseUrl(url).path;
-
-    if (!path) {
-        return null;
+export function normalizePath(path) {
+    if (path.indexOf('/') !== 0) {
+        path = `/${path}`;
     }
 
-    const basename = path.substr(path.lastIndexOf('/') + 1);
-    const dotIndex = basename.lastIndexOf('.');
+    if (!isAvailableFile(path)) {
+        const Config = global.Container.make(CONFIG_PROVIDER);
 
-    if (dotIndex === -1) {
-        return null;
+        if (Config.get('app.trailingSlash') === true) {
+            if (path.lastIndexOf('/') !== (path.length - 1)) {
+                path = `${path}/`;
+            }
+        }
+
+        if (Config.get('app.trailingSlash') === false) {
+            if (path.lastIndexOf('/') === (path.length - 1)) {
+                path = path.slice(0, -1);
+            }
+        }
     }
 
-    return basename.substr(dotIndex + 1);
+    return path;
 }

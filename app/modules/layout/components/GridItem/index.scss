@@ -1,6 +1,8 @@
 @import "/app/styles/variabels/screen";
 @import "/app/styles/variabels/grid";
 
+@import "/app/styles/mixins/grid";
+
 // From bigger to smaller screen
 $screen-width: (
         xl: $screen__breakpoint--xl,
@@ -12,24 +14,28 @@ $screen-width: (
 
 .GridItem {
     @for $i from 1 through $grid__columns {
-        &_offset-#{$i - 1} {
-            lost-offset: ($i - 1)/$grid__columns row $grid__gutter;
+        &_columns_#{$i} {
+            @include column($i/$grid__columns, $grid__gutter);
         }
+    }
 
-        &_columns-#{$i} {
-            lost-column: $i/$grid__columns $i $grid__gutter !important;
+    @for $i from 1 through $grid__columns {
+        &_offset_#{$i - 1} {
+            @include offset(($i - 1)/$grid__columns, $grid__gutter);
         }
     }
 
     @each $screen in map-keys($screen-width) {
         @media (max-width: map-get($screen-width, $screen)) {
             @for $i from 1 through $grid__columns {
-                &_offset#{to-upper-case($screen)}-#{$i - 1} {
-                    lost-offset: ($i - 1)/$grid__columns row $grid__gutter;
+                &_columns#{to-upper-case($screen)}_#{$i} {
+                    @include column($i/$grid__columns, $grid__gutter);
                 }
+            }
 
-                &_columns#{to-upper-case($screen)}-#{$i} {
-                    lost-column: $i/$grid__columns $i $grid__gutter !important;
+            @for $i from 1 through $grid__columns {
+                &_offset#{to-upper-case($screen)}_#{$i - 1} {
+                    @include offset(($i - 1)/$grid__columns, $grid__gutter);
                 }
             }
         }

@@ -5,10 +5,12 @@ import { bem } from 'app/utils/bem';
 
 const b = bem('Copyright');
 
-export default observer(function Copyright() {
+function Copyright() {
     return (
         <div className={b()}>
             &copy; «company.ltd»
         </div>
     );
-});
+}
+
+export default observer(Copyright);

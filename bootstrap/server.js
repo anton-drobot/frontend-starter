@@ -1,92 +1,87 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Provider, useStaticRendering } from 'mobx-react';
-import CatLog from 'cat-log';
+import { Helmet } from 'react-helmet';
 
-import ApiMethod from 'framework/ApiMethod';
-import Env from 'framework/Env';
-import Config from 'framework/Config';
-import Server from 'framework/Server';
-import Router from 'framework/Router';
-import Store from 'framework/Store';
-import Module from 'framework/Module';
-import { normalizeError, ApiException } from 'framework/Exceptions';
+import Container from 'framework/IoC/Container';
+import Registrar from 'framework/IoC/Registrar';
 
-// Config
-import serverConfig from 'app/config/server';
+import {
+    ENV_PROVIDER,
+    ROUTER_PROVIDER,
+    SERVER_PROVIDER,
+    STORE_COLLECTION_PROVIDER,
+    CONFIG_PROVIDER
+} from 'framework/Providers/types';
 
-import registerApp from 'app';
-import apiMethods from 'app/api';
-import App from 'app/modules/app/components/App';
+import ServerLoggerProvider from 'framework/Providers/ServerLoggerProvider';
+import ServerProvider from 'framework/Providers/ServerProvider';
+
+import { providers, registerApp, onRequest } from 'bootstrap/app';
 import layout from 'app/views/layout';
 
-const log = new CatLog('server');
+import serverConfig from 'config/server';
+
+global.Container = new Container();
 
 /**
- * Start the server.
+ * Start server instance.
+ *
+ * @return {Promise.<void>}
  */
-export default function registerServer() {
-    Config.registerConfig('server', serverConfig);
+export default function start() {
+    new Registrar(global.Container)
+        .register([
+            ...providers,
+            ServerLoggerProvider,
+            ServerProvider
+        ])
+        .then(async () => {
+            const { default: App } = await import('app/modules/core/components/App');
 
-    // Register API Methods
-    apiMethods.forEach((ApiMethod) => {
-        new ApiMethod();
-    });
+            const Config = global.Container.make(CONFIG_PROVIDER);
+            const Env = global.Container.make(ENV_PROVIDER);
+            const Router = global.Container.make(ROUTER_PROVIDER);
+            const Server = global.Container.make(SERVER_PROVIDER, { Router });
+            const StoreCollection = global.Container.make(STORE_COLLECTION_PROVIDER);
 
-    registerApp();
+            Config.register('server', serverConfig);
 
-    const router = new Router();
-    const server = new Server(router);
+            /**
+             * @see https://github.com/mobxjs/mobx-react#server-side-rendering-with-usestaticrendering
+             */
+            useStaticRendering(true);
 
-    /**
-     * @see https://github.com/mobxjs/mobx-react#server-side-rendering-with-usestaticrendering
-     */
-    useStaticRendering(true);
+            /**
+             * Register application on each request.
+             */
+            await registerApp();
 
-    router.match(['GET', 'POST'], '/api/:name?', async (context) => {
-        context.type = 'application/json';
+            Router.match(['GET', 'HEAD', 'POST'], '(.*)', async (context) => {
+                await onRequest();
 
-        try {
-            if (!context.params.name) {
-                throw ApiException.missingMethodName(404);
-            }
+                const store = StoreCollection.store();
 
-            const resolvedMethod = ApiMethod.resolveMethod(context.params.name, context.method);
+                context.type = 'text/html';
+                context.status = store.router.isApplicationUrl(context.href) ? 200 : 404;
 
-            if (!resolvedMethod.handler) {
-                throw ApiException.methodNotFound(context.params.name, 404);
-            }
+                store.router.go(context.href, { replace: true });
+                store.router.setHttpStatus(context.status);
 
-            return await resolvedMethod.handler(context);
-        } catch (error) {
-            const normalizedError = normalizeError(error);
-            context.status = normalizedError.status;
-            log.error(normalizedError);
+                const markup = renderToString(
+                    <Provider {...store}>
+                        <App />
+                    </Provider>
+                );
 
-            return { error: error.toJSON() };
-        }
-    });
+                const helmet = Helmet.renderStatic();
 
-    router.match(['GET', 'HEAD', 'POST'], '*', async (context) => {
-        await Promise.all(Module.getModules().map(async (module) => {
-            await module.boot();
-        }));
+                return layout(context, markup, helmet, StoreCollection);
+            });
 
-        const stores = Store.getStores();
-        await stores.router.setLocation(context.href);
-
-        if (!stores.router.isRegisteredRoute(context.url)) {
-            context.status = 404;
-        }
-
-        const markup = renderToString(
-            <Provider {...stores}>
-                <App />
-            </Provider>
-        );
-
-        return layout(context, markup);
-    });
-
-    server.listen(Env.get('HOST'), Env.get('PORT'));
+            Server.listen(Env.get('HOST'), Env.get('PORT'));
+        })
+        .catch((err) => {
+            console.error(err);
+        });
 }

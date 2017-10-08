@@ -1,0 +1,29 @@
+@import "/app/styles/mixins/interactionEffects";
+
+@import "/app/modules/controls/components/Radio/mixins";
+
+.Radio {
+    $this: &;
+
+    @include Radio_base();
+
+    &_size {
+        &_m {
+            @include Radio_size($size: m, $rootSelector: $this);
+        }
+    }
+
+    &_theme {
+        &_default {
+            @include Radio_theme($theme: default, $rootSelector: $this);
+        }
+    }
+
+    &__input {}
+
+    &__indicator {}
+
+    &__icon {}
+
+    &__label {}
+}

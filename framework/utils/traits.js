@@ -1,4 +1,4 @@
-import { InvalidArgumentException } from '../Exceptions';
+import InvalidArgumentException from '../Exceptions/InvalidArgumentException';
 
 /**
  * Applies all traits as part of the target class.

@@ -1,1 +1,3 @@
-app/i18n/**/*
+coverage/*
+static/*
+**/*.test.js

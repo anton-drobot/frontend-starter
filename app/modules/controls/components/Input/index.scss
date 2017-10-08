@@ -1,0 +1,120 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/variabels/fonts";
+
+@import "/app/styles/functions/get";
+
+@import "/app/styles/mixins/interactionEffects";
+
+.Input {
+    $this: &;
+
+    display: inline-block;
+    outline: none;
+
+    &_withLabel {}
+
+    &_size {
+        &_m {
+            $size: m;
+
+            $fontSize: get($fonts, $size, size);
+            $lineHeight: get($fonts, $size, lineHeight);
+
+            #{$this}__input {
+                font-size: $fontSize;
+                line-height: $lineHeight;
+
+                padding: .8rem 1.2rem;
+                border-radius: 4px;
+            }
+
+            #{$this}__label {
+                font-size: $fontSize;
+                line-height: $lineHeight;
+            }
+        }
+    }
+
+    &_theme {
+        &_default {
+            $theme: default;
+
+            $normalBackground: get($colors, input, $theme, normal, background);
+            $normalBorder: get($colors, input, $theme, normal, border);
+            $normalColor: get($colors, input, $theme, normal, color);
+            $normalShadow: get($colors, input, $theme, normal, shadow);
+
+            $focusBackground: get($colors, input, $theme, focus, background);
+            $focusBorder: get($colors, input, $theme, focus, border);
+            $focusColor: get($colors, input, $theme, focus, color);
+            $focusShadow: get($colors, input, $theme, focus, shadow);
+
+            $hoverBackground: get($colors, input, $theme, hover, background);
+            $hoverBorder: get($colors, input, $theme, hover, border);
+            $hoverColor: get($colors, input, $theme, hover, color);
+            $hoverShadow: get($colors, input, $theme, hover, shadow);
+
+            $activeBackground: get($colors, input, $theme, active, background);
+            $activeBorder: get($colors, input, $theme, active, border);
+            $activeColor: get($colors, input, $theme, active, color);
+            $activeShadow: get($colors, input, $theme, active, shadow);
+
+            $disabledBackground: get($colors, input, $theme, disabled, background);
+            $disabledBorder: get($colors, input, $theme, disabled, border);
+            $disabledColor: get($colors, input, $theme, disabled, color);
+            $disabledShadow: get($colors, input, $theme, disabled, shadow);
+
+            #{$this}__input {
+                background: $normalBackground;
+                border: 1px solid $normalBorder;
+                color: $normalColor;
+                box-shadow: $normalShadow;
+
+                &:focus {
+                    background: $focusBackground;
+                    border-color: $focusBorder;
+                    color: $focusColor;
+                    box-shadow: $focusShadow;
+                }
+
+                &:hover {
+                    background: $hoverBackground;
+                    border-color: $hoverBorder;
+                    color: $hoverColor;
+                    box-shadow: $hoverShadow;
+                }
+
+                &:active {
+                    background: $activeBackground;
+                    border-color: $activeBorder;
+                    color: $activeColor;
+                    box-shadow: $activeShadow;
+                }
+
+                &[readonly] {
+                    background: $disabledBackground;
+                    border-color: $disabledBorder;
+                    color: $disabledColor;
+                    box-shadow: $disabledShadow;
+                }
+            }
+        }
+    }
+
+    &__labelWrapper {}
+
+    &__label {
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    &__input {
+        @include interactionEffects();
+
+        display: block;
+
+        &[readonly] {
+            cursor: default;
+        }
+    }
+}

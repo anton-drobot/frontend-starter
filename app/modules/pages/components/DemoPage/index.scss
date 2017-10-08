@@ -1,0 +1,58 @@
+.DemoPage {
+    &__section {
+        margin-bottom: 6rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #ccc;
+    }
+
+    &__sectionTitle {
+        font-size: 2rem;
+        line-height: 2.7rem;
+    }
+
+    &__examples {
+        border: 1px solid #ccc;
+        padding: 2rem;
+    }
+
+    &__firstColumnExample {
+        background: rgba(255, 0, 0, .1);
+    }
+
+    &__secondColumnExample {
+        background: rgba(0, 255, 0, .1);
+    }
+
+    &__thirdColumnExample {
+        background: rgba(0, 0, 255, .1);
+    }
+
+    &__fourthColumnExample {
+        background: rgba(255, 0, 255, .1);
+    }
+
+    &__buttonExample {
+        margin-right: 1rem;
+        margin-bottom: 2rem;
+
+        .Icon_caret {
+            width: 8px;
+            height: 4px;
+        }
+
+        .Icon_tick {
+            width: 18px;
+            height: 15px;
+        }
+    }
+
+    &__checkboxExample {
+        margin-right: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    &__inputExample {
+        margin-right: 1rem;
+        margin-bottom: 2rem;
+    }
+}

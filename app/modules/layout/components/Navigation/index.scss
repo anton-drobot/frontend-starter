@@ -25,6 +25,6 @@
     }
 
     &__link {
-        @include Link($type: navigationItem);
+        //@include Link($type: navigationItem);
     }
 }

@@ -43,7 +43,7 @@ function toString({ block, element, mods = {} }) {
  *
  * @return {*}
  */
-export function bemMix(classes, mixes) {
+export function mix(classes, mixes) {
     if (Array.isArray(mixes)) {
         mixes = mixes.filter(Boolean).join(' ');
     }

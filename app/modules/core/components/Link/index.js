@@ -1,29 +1,43 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 
-import bindAll from 'lodash/bindAll';
-import { bem, bemMix } from 'app/utils/bem';
+import { bem, mix } from 'app/utils/bem';
+
+import RouterStore from 'app/modules/core/stores/Router';
 
 const b = bem('Link');
-
-const isModifiedEvent = (e) => Boolean(e.metaKey || e.altKey || e.ctrlKey || e.shiftKey);
 
 @inject('router')
 @observer
 export default class Link extends Component {
-    constructor(props) {
-        super(props);
+    static propTypes = {
+        router: PropTypes.instanceOf(RouterStore),
+        className: PropTypes.string,
+        theme: PropTypes.string,
+        href: PropTypes.string.isRequired,
+        target: PropTypes.string,
+        rel: PropTypes.string,
+        replace: PropTypes.bool,
+        onClick: PropTypes.func,
+        scrollTo: PropTypes.number
+    };
 
-        bindAll(this, ['onClick']);
-    }
+    static defaultProps = {
+        theme: 'default',
+        replace: false,
+        scrollTo: 0
+    };
 
-    async onClick(e) {
+    isModifiedEvent = (e) => Boolean(e.metaKey || e.altKey || e.ctrlKey || e.shiftKey);
+
+    onClick = (e) => {
         const {
             router,
-            to,
-            replace = false,
+            href,
+            replace,
             onClick,
-            scrollTo = 0
+            scrollTo
         } = this.props;
 
         if (onClick) {
@@ -33,37 +47,33 @@ export default class Link extends Component {
         if (
             e.defaultPrevented ||
             e.button !== 0 ||
-            isModifiedEvent(e) ||
-            !router.isRegisteredRoute(to)
+            this.isModifiedEvent(e) ||
+            !router.isApplicationUrl(href)
         ) {
             return;
         }
 
         e.preventDefault();
 
-        if (replace) {
-            router.replace(to);
-        } else {
-            router.push(to);
-        }
-
-        await router.setLocation(to);
+        router.go(href, { replace });
         window.scrollTo(scrollTo, 0);
-    }
+    };
 
     render() {
         const {
-            router,
             className,
-            to,
+            theme,
+            href,
             children,
             target,
             rel,
-            replace,
-            onClick,
-            scrollTo = 0,
             ...props
         } = this.props;
+
+        delete props.router;
+        delete props.replace;
+        delete props.onClick;
+        delete props.scrollTo;
 
         const relList = rel ? rel.split(' ') : [];
 
@@ -79,8 +89,8 @@ export default class Link extends Component {
         return (
             <a
                 {...props}
-                className={bemMix(b(), className)}
-                href={to}
+                className={mix(b({ theme }), className)}
+                href={href}
                 target={target}
                 rel={relList.join(' ') || null}
                 onClick={target !== '_blank' && this.onClick}

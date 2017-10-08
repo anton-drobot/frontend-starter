@@ -1,0 +1,54 @@
+@import "/app/styles/variabels/colors";
+
+@import "/app/styles/functions/get";
+
+@import "/app/styles/mixins/interactionEffects";
+
+@mixin Link_base() {
+    @include interactionEffects();
+
+    text-decoration: none;
+    outline: none;
+}
+
+@mixin Link_underline($normal, $focus, $hover, $active, $opacity: .4) {
+    border-bottom: 1px solid rgba($normal, $opacity);
+    text-decoration: none;
+
+    &:focus {
+        border-bottom-color: rgba($focus, $opacity);
+    }
+
+    &:hover {
+        border-bottom-color: rgba($hover, $opacity);
+    }
+
+    &:active {
+        border-bottom-color: rgba($active, $opacity);
+    }
+}
+
+@mixin Link_theme($theme: default) {
+    $normal: get($colors, link, $theme, normal);
+    $focus: get($colors, link, $theme, focus);
+    $focusShadow: get($colors, link, $theme, focusShadow);
+    $hover: get($colors, link, $theme, hover);
+    $active: get($colors, link, $theme, active);
+
+    @include Link_underline($normal, $focus, $hover, $active);
+
+    color: $normal;
+
+    &:focus {
+        color: $focus;
+        box-shadow: $focusShadow;
+    }
+
+    &:hover {
+        color: $hover;
+    }
+
+    &:active {
+        color: $active;
+    }
+}

@@ -54,7 +54,7 @@
     "no-var": "error",
     "no-extra-semi": "off",
     "no-console": "off",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "no-extra-bind": "error",
     "no-implicit-coercion": [
       "error",
@@ -86,9 +86,13 @@
         "allowBind": false
       }
     ],
-    "react/jsx-space-before-closing": [
+    "react/jsx-tag-spacing": [
       "error",
-      "always"
+      {
+        "closingSlash": "never",
+        "beforeSelfClosing": "always",
+        "afterOpening": "never"
+      }
     ],
     "react/jsx-filename-extension": [
       "warn",

@@ -1,8 +1,5 @@
 @import "/app/styles/mixins/wrapper";
 
-@import "/app/modules/layout/components/Header";
-@import "/app/modules/layout/components/Footer";
-
 .DefaultLayout {
     &__wrapper {
         @include wrapper;

@@ -1,0 +1,13 @@
+/// Fetch nested keys.
+///
+/// @param {Sass::Script::Value::Map} $map - Map
+/// @param {[Sass::Script::Value::Base]} $keys - Keys to fetch
+///
+/// @return {Sass::Script::Value::Base}
+@function get($map, $keys...) {
+    @each $key in $keys {
+        $map: map-get($map, $key);
+    }
+
+    @return $map;
+}

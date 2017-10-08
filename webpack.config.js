@@ -3,21 +3,49 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const SvgStorePlugin = require('webpack-external-svg-sprite');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-// PostCSS, TODO: cssnano, node-css-mqpacker, postcss-sprites, lost
+// PostCSS, TODO: node-css-mqpacker, postcss-sprites
 const sassImportOnce = require('node-sass-import-once');
-const postcssCalc = require('postcss-calc');
 const postcssFlexbugsFixes = require('postcss-flexbugs-fixes');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
-const lost = require('lost');
 
 const env = process.env.NODE_ENV;
+const isDev = env === 'development';
+
+const browsers = [
+    '> 1%',
+    'last 4 versions',
+    'Firefox ESR',
+    'not ie <= 9',
+    'not bb <= 10'
+];
 
 module.exports = {
-    entry: {
-        app: ['babel-polyfill', path.join(__dirname, '/bootstrap/client.js')]
-    },
+    entry: (function () {
+        const entry = {
+            vendor: [
+                'react',
+                'react-dom',
+                'react-helmet',
+                'mobx',
+                'mobx-react',
+                'serializr',
+                'url-parse',
+                'path-to-regexp'
+            ],
+            app: [
+                path.join(__dirname, '/bootstrap/client.js')
+            ]
+        };
+
+        if (isDev) {
+            //entry.app.unshift('webpack-hot-middleware/client?path=__webpack_hmr&timeout=20000&dynamicPublicPath=true', 'react-hot-loader/patch');
+        }
+
+        return entry;
+    })(),
     output: {
         publicPath: '/assets/',
         path: path.join(__dirname, '/static/assets/'),
@@ -34,7 +62,7 @@ module.exports = {
     watch: false,
     bail: false,
     profile: true,
-    devtool: env === 'development' ? 'cheap-source-map' : 'source-map',
+    devtool: isDev ? 'cheap-source-map' : 'source-map',
     node: {
         fs: 'empty'
     },
@@ -52,25 +80,55 @@ module.exports = {
                     /node_modules/,
                     /static/
                 ],
-                loader: 'babel-loader',
-                options: {
-                    ignore: [
-                        'node_modules/**/*'
-                    ],
-                    presets: [
-                        [
-                            'es2015',
-                            {
-                                modules: false
+                use: (function () {
+                    const loaders = [
+                        {
+                            loader: 'babel-loader',
+                            options: {
+                                presets: [
+                                    [
+                                        'env',
+                                        {
+                                            browsers,
+                                            modules: false,
+                                            useBuiltIns: true,
+                                            exclude: [
+                                                'transform-exponentiation-operator',
+                                            ]
+                                        }
+                                    ],
+                                    'react'
+                                ],
+                                plugins: [
+                                    'transform-decorators-legacy',
+                                    'transform-class-properties',
+                                    'transform-object-rest-spread',
+                                    [
+                                        'transform-runtime',
+                                        {
+                                            'helpers': false,
+                                            'polyfill': false,
+                                            'regenerator': true
+                                        }
+                                    ]
+                                ]
                             }
-                        ],
-                        'react'
-                    ],
-                    plugins: [
-                        'transform-async-to-generator',
-                        'transform-decorators-legacy',
-                        'transform-class-properties',
-                        'transform-object-rest-spread'
+                        }
+                    ];
+
+                    if (isDev) {
+                        //loaders.unshift('react-hot-loader/webpack');
+                    }
+
+                    return loaders;
+                })()
+            },
+            {
+                test: /app\/modules\/(.*)\/components\/(.*)\/index\.js$/,
+                loader: 'dependency-loader',
+                options: {
+                    injections: [
+                        'index.scss'
                     ]
                 }
             },
@@ -80,7 +138,6 @@ module.exports = {
                     /node_modules/,
                     /static/
                 ],
-                // TODO: какие нужны соурсмапы
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use: [
@@ -93,15 +150,10 @@ module.exports = {
                         {
                             loader: 'postcss-loader',
                             options: {
-                                plugins: function () {
-                                    return [
-                                        lost,
-                                        postcssCalc,
-                                        postcssFlexbugsFixes,
-                                        autoprefixer
-                                        //cssnano
-                                    ];
-                                }
+                                plugins: [
+                                    postcssFlexbugsFixes(),
+                                    autoprefixer({ browsers })
+                                ]
                             }
                         },
                         {
@@ -121,26 +173,53 @@ module.exports = {
             }
         ]
     },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-            }
-        }),
-        new webpack.ContextReplacementPlugin(/app[\/\\]modules/, false),
-        new SvgStorePlugin({
-            directory: path.resolve(__dirname, 'app', 'modules'),
-            name: 'images/sprite.svg',
-            prefix: 'icon-',
-        }),
-        new ExtractTextPlugin('css/app.css')
-        /*new UglifyJSPlugin({
-            compress: {
-                warnings: false
-            },
-            beautify: env === 'development',
-            comments: env === 'development'
-        })*/
-    ]
+    plugins: (function () {
+        const plugins = [
+            new webpack.DefinePlugin({
+                'process.env': {
+                    NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+                }
+            }),
+            new webpack.ContextReplacementPlugin(/app[/\\]modules/, false),
+            new webpack.optimize.CommonsChunkPlugin({
+                names: [
+                    'vendor'
+                ],
+                chunks: [
+                    'app'
+                ]
+            }),
+            new SvgStorePlugin({
+                directory: path.resolve(__dirname, 'app', 'images'),
+                name: 'images/sprite.svg',
+                prefix: 'icon-',
+            }),
+            new ExtractTextPlugin('css/app.css'),
+            new OptimizeCssAssetsPlugin({
+                cssProcessor: cssnano,
+                cssProcessorOptions: {
+                    autoprefixer: false,
+                    svgo: false,
+                    //discardComments: !isDev,
+                    //normalizeWhitespace: !isDev
+                },
+                canPrint: true
+            })
+        ];
+
+        if (isDev) {
+            //plugins.push(new webpack.HotModuleReplacementPlugin());
+        } else {
+            plugins.push(new UglifyJSPlugin({
+                ecma: 8,
+                output: {
+                    comments: false,
+                    beautify: false,
+                }
+            }));
+        }
+
+        return plugins;
+    })()
 };
 

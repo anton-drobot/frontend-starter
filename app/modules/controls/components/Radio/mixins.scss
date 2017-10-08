@@ -1,0 +1,126 @@
+@import "/app/styles/variabels/colors";
+@import "/app/styles/variabels/fonts";
+
+@import "/app/styles/functions/get";
+
+@import "/app/styles/mixins/interactionEffects";
+
+@mixin Radio_size($size: m, $rootSelector: '.Radio') {
+    $fontSize: get($fonts, $size, size);
+    $lineHeight: get($fonts, $size, lineHeight);
+
+    #{$rootSelector}__indicator {
+        width: $lineHeight;
+        height: $lineHeight;
+        margin-right: .6rem;
+    }
+
+    #{$rootSelector}__icon {
+        width: 10px;
+        height: 10px;
+        margin-top: -5px;
+        margin-left: -5px;
+        top: 50%;
+        left: 50%;
+    }
+
+    #{$rootSelector}__label {
+        font-size: $fontSize;
+        line-height: $lineHeight;
+    }
+}
+
+@mixin Radio_theme($theme: default, $rootSelector: '.Radio') {
+    #{$rootSelector}__input {
+        $normalBackground: get($colors, radio, $theme, normal, background);
+        $normalBorder: get($colors, radio, $theme, normal, border);
+        $normalColor: get($colors, radio, $theme, normal, color);
+        $normalShadow: get($colors, radio, $theme, normal, shadow);
+
+        $focusBackground: get($colors, radio, $theme, focus, background);
+        $focusBorder: get($colors, radio, $theme, focus, border);
+        $focusColor: get($colors, radio, $theme, focus, color);
+        $focusShadow: get($colors, radio, $theme, focus, shadow);
+
+        $hoverBackground: get($colors, radio, $theme, hover, background);
+        $hoverBorder: get($colors, radio, $theme, hover, border);
+        $hoverColor: get($colors, radio, $theme, hover, color);
+        $hoverShadow: get($colors, radio, $theme, hover, shadow);
+
+        $activeBackground: get($colors, radio, $theme, active, background);
+        $activeBorder: get($colors, radio, $theme, active, border);
+        $activeColor: get($colors, radio, $theme, active, color);
+        $activeShadow: get($colors, radio, $theme, active, shadow);
+
+        $disabledBackground: get($colors, radio, $theme, disabled, background);
+        $disabledBorder: get($colors, radio, $theme, disabled, border);
+        $disabledColor: get($colors, radio, $theme, disabled, color);
+        $disabledShadow: get($colors, radio, $theme, disabled, shadow);
+
+        & ~ #{$rootSelector}__indicator {
+            background: $normalBackground;
+            border: 1px solid $normalBorder;
+            color: $normalColor;
+            box-shadow: $normalShadow;
+        }
+
+        &:focus ~ #{$rootSelector}__indicator {
+            background: $focusBackground;
+            border-color: $focusBorder;
+            color: $focusColor;
+            box-shadow: $focusShadow;
+        }
+
+        &:hover ~ #{$rootSelector}__indicator {
+            background: $hoverBackground;
+            border-color: $hoverBorder;
+            color: $hoverColor;
+            box-shadow: $hoverShadow;
+        }
+
+        &:active ~ #{$rootSelector}__indicator {
+            background: $activeBackground;
+            border-color: $activeBorder;
+            color: $activeColor;
+            box-shadow: $activeShadow;
+        }
+
+        &[disabled] ~ #{$rootSelector}__indicator {
+            background: $disabledBackground;
+            border-color: $disabledBorder;
+            color: $disabledColor;
+            box-shadow: $disabledShadow;
+        }
+    }
+}
+
+@mixin Radio_base() {
+    display: inline-block;
+    cursor: pointer;
+
+    &_disabled {
+        cursor: default;
+    }
+
+    &__input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+
+    &__indicator {
+        @include interactionEffects();
+
+        display: inline-block;
+        position: relative;
+        border-radius: 50%;
+        vertical-align: bottom;
+        user-select: none;
+    }
+
+    &__icon {
+        position: absolute;
+    }
+
+    &__label {}
+}

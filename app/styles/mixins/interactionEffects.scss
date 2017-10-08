@@ -1,0 +1,14 @@
+@import "../variabels/durations";
+
+@mixin interactionEffects {
+    transition:
+            color $duration__normal ease-in-out,
+            border-color $duration__normal ease-in-out,
+            background-color $duration__normal ease-in-out;
+
+    &:focus,
+    &:hover,
+    &:active {
+        transition: none;
+    }
+}

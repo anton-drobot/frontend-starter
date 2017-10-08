@@ -6,6 +6,7 @@
     "react"
   ],
   "plugins": [
+    "dynamic-import-node",
     "transform-es2015-modules-commonjs",
     "transform-decorators-legacy",
     "transform-class-properties",
