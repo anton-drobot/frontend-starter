@@ -97,6 +97,7 @@ module.exports = {
                                             ]
                                         }
                                     ],
+                                    'flow',
                                     'react'
                                 ],
                                 plugins: [
