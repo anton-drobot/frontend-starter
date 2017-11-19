@@ -36,7 +36,7 @@ module.exports = {
                 'path-to-regexp'
             ],
             app: [
-                path.join(__dirname, '/bootstrap/client.js')
+                path.join(__dirname, 'bootstrap', 'client.js')
             ]
         };
 
@@ -48,7 +48,7 @@ module.exports = {
     })(),
     output: {
         publicPath: '/assets/',
-        path: path.join(__dirname, '/static/assets/'),
+        path: path.join(__dirname, 'static', 'assets'),
         filename: 'js/[name].js'
     },
     resolve: {
@@ -211,10 +211,12 @@ module.exports = {
             //plugins.push(new webpack.HotModuleReplacementPlugin());
         } else {
             plugins.push(new UglifyJSPlugin({
-                ecma: 8,
-                output: {
-                    comments: false,
-                    beautify: false,
+                uglifyOptions: {
+                    ecma: 8,
+                    output: {
+                        comments: false,
+                        beautify: false
+                    }
                 }
             }));
         }
