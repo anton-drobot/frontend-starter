@@ -16,17 +16,25 @@ $ npm start
 
 # Запуск production версии
 
-TODO: переделать package.json и актуализировать документацию.
-
 В проде нельзя использовать бабель в риалтайме, потому что это очень дорого. Поэтому сначала нужно скомпилировать в старый синтаксис.
 
+Скопируем папку:
 ```sh
-$ rm -rf build
-$ cp -r frontend build
-$ rm -rf build/node_modules
-$ NODE_ENV=production frontend/node_modules/.bin/babel frontend -d build --ignore frontend/node_modules
-$ cd build
-$ NODE_ENV=production node_modules/.bin/webpack
+$ rm -rf production
+$ cp -r dev production
+```
+
+После этого можно установить зависомисти. Затем:
+```sh
+$ NODE_PATH=. NODE_ENV=production dev/node_modules/.bin/babel dev -d production --ignore dev/node_modules,dev/static
+$ cd production
+$ NODE_PATH=. NODE_ENV=production node_modules/.bin/webpack
+```
+
+Не забыть правильно включить сервер через pm2
+
+```sh
+$ NODE_PATH=. NODE_ENV=production pm2 start server.js --name [NAME]
 ```
 
 # Namespaces
@@ -54,14 +62,3 @@ $ NODE_ENV=production node_modules/.bin/webpack
     @include wrapper;
 }
 ```
-# TODO
-
-- [x] Написать webpack-svg-spritesmith. (https://github.com/anton-drobot/webpack-external-svg-sprite)
-- [ ] Решить проблему с отображением ошибок 404, 500 и так далее.
-- [x] Добавить адаптивную сетку.
-- [ ] Написать тесты.
-- [x] API.
-- [ ] Поле зависимостей для модулей.
-- [ ] Стайлгайды.
-- [x] Усовершенствовать интерфейс для CLI (https://github.com/mattallty/Caporal.js).
-- [x] Автоматический импорт переводов.
