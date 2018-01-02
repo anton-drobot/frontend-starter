@@ -1,10 +1,21 @@
+// @flow
+
+import type { LogicalExceptionInterface } from '../LogicalExceptionInterface';
+
 /**
  * LogicalException is a neutral class extend the Error object.
  *
  * @class LogicalException
  */
-export default class LogicalException extends Error {
-    constructor(message, status = 500, code, data = {}) {
+export default class LogicalException extends Error implements LogicalExceptionInterface {
+    message: string;
+    name: string;
+    status: number;
+    code: string;
+    data: Object;
+    stack: string;
+
+    constructor(message: string, status?: number = 500, code?: string = '', data?: Object = {}) {
         super(message);
 
         // extending Error is weird and does not propagate `message`

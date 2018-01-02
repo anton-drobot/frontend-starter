@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
-import { appUrl } from 'framework/utils/url';
+import { appUrl } from 'framework/utils/url/index';
 import { bem } from 'app/utils/bem';
 import { HOME_PAGE, DEMO_PAGE } from 'app/routes';
 

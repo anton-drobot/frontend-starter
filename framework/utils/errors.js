@@ -1,3 +1,7 @@
+// @flow
+
+import type { LogicalExceptionInterface } from '../Exceptions/LogicalExceptionInterface';
+
 /**
  * Normalize error object by setting required parameters if they does not exists.
  *
@@ -5,7 +9,7 @@
  *
  * @return {LogicalException|Error}
  */
-export function normalizeError(error) {
+export function normalizeError(error: Object): LogicalExceptionInterface {
     error.message = error.message || 'Internal error';
     error.status = error.status || 500;
     error.code = error.code || 'E_INTERNAL_ERROR';

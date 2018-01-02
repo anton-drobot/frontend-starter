@@ -1,61 +1,44 @@
+// @flow
+
 import URL from 'url-parse';
 import pathToRegexp from 'path-to-regexp';
 
-import { allExtensions } from './fileDefinitions';
+import type { LocationInterface } from './LocationInterface';
 
-import { CONFIG_PROVIDER } from '../Providers/types';
+import { allExtensions } from '../fileDefinitions';
 
-/**
- * Location interface.
- *
- * @typedef {Object} Location
- *
- * @property {String} protocol - The protocol scheme of the URL (e.g. "http:").
- * @property {Boolean} slashes - A boolean which indicates whether the protocol is followed by two forward slashes ("//").
- * @property {String} auth - Authentication information portion (e.g. "username:password").
- * @property {String} username - Username of basic authentication.
- * @property {String} password - Password of basic authentication.
- * @property {String} host - Host name with port number.
- * @property {String} hostname - Host name without port number.
- * @property {String} port - Optional port number.
- * @property {String} pathname - URL path.
- * @property {Object|Boolean} query - arsed object containing query string, unless parsing is set to false.
- * @property {String} hash - The "fragment" portion of the URL including the pound-sign ("#").
- * @property {String} href - The full URL.
- * @property {String} origin - The origin of the URL.
- * @property {Function} set - Change parts of the URL.
- * @property {Function} toString - Generates a full URL.
- */
+import { CONFIG_PROVIDER } from '../../Providers/types';
 
 /**
  * Parse a URL and return its components.
  *
- * @param {String} url
+ * @param {string} url
  *
- * @return {Location}
+ * @return {LocationInterface}
  */
-export function parse(url) {
+export function parse(url: string): LocationInterface {
     return new URL(url, true);
 }
 
 /**
  * Checks if URL is absolute.
  *
- * @param {String} url
+ * @param {string} url
  *
- * @return {Boolean}
+ * @return {boolean}
  */
-export function isAbsoluteUrl(url) {
+export function isAbsoluteUrl(url: string): boolean {
     return parse(url).host.length > 0;
 }
 
 /**
  * Checks if URL is local application URL.
  *
- * @param {String} url
- * @return {Boolean}
+ * @param {string} url
+ *
+ * @return {boolean}
  */
-export function isAppUrl(url) {
+export function isAppUrl(url: string): boolean {
     const Config = global.Container.make(CONFIG_PROVIDER);
 
     return url.indexOf(Config.get('app.baseUrl')) === 0;
@@ -64,19 +47,19 @@ export function isAppUrl(url) {
 /**
  * Returns absolute URL to the application.
  *
- * @param {String|Object} path
+ * @param {string} path
  * @param {?Object} [params=null]
  * @param {?Object} [options]
- * @param {?Boolean} [options.baseUrl=true]
+ * @param {?boolean} [options.baseUrl=true]
  *
- * @return {String}
+ * @return {string}
  *
  * @example
  * appUrl('/'); // http://site.tld/
  * appUrl('/path/'); // http://site.tld/path/
  * appUrl('http://other-site.tld/'); // http://other-site.tld/
  */
-export function appUrl(path, params = null, { baseUrl = true } = {}) {
+export function appUrl(path: string, params?: Object | null = null, { baseUrl = true }: { baseUrl: boolean } = {}) {
     const Config = global.Container.make(CONFIG_PROVIDER);
 
     if (params) {
@@ -93,17 +76,17 @@ export function appUrl(path, params = null, { baseUrl = true } = {}) {
  * This function is convenient when encoding a string to be used in a query part of a URL, as a convenient way to pass
  * variables to the next page.
  *
- * @param {String} string - the string to be encoded
+ * @param {string} string - the string to be encoded
  *
- * @returns {String}
+ * @returns {string}
  */
-export function urlEncode(string) {
+export function urlEncode(string: string): string {
     return encodeURIComponent(string)
         .replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16)}`)
         .replace(/%20/g, '+');
 }
 
-function _buildQueryHelper(key, value, argSeparator = '&') {
+/*function _buildQueryHelper(key, value, argSeparator = '&') {
     if (value === null) {
         return;
     } else if (value === true) {
@@ -121,7 +104,7 @@ function _buildQueryHelper(key, value, argSeparator = '&') {
     }
 
     return `${urlEncode(key)}=${urlEncode(value)}`;
-}
+}*/
 
 /**
  * Generates a URL-encoded query string from the object.
@@ -133,7 +116,8 @@ function _buildQueryHelper(key, value, argSeparator = '&') {
  *
  * @returns {String}
  */
-export function buildQuery(data = {}, numericPrefix, argSeparator = '&') {
+
+/*export function buildQuery(data = {}, numericPrefix, argSeparator = '&') {
     return Object.keys(data)
         .map((key) => {
             const value = data[key];
@@ -145,16 +129,16 @@ export function buildQuery(data = {}, numericPrefix, argSeparator = '&') {
             return _buildQueryHelper(key, value, argSeparator);
         })
         .join(argSeparator);
-}
+}*/
 
 /**
  * Get extension if it exists.
  *
- * @param {String} url
+ * @param {string} url
  *
- * @return {?String}
+ * @return {?string}
  */
-export function getExtension(url) {
+export function getExtension(url: string): string | null {
     const path = parse(url).pathname;
 
     if (!path) {
@@ -174,11 +158,11 @@ export function getExtension(url) {
 /**
  * Check if URL is available file.
  *
- * @param {String} url
+ * @param {string} url
  *
- * @return {Boolean}
+ * @return {boolean}
  */
-export function isAvailableFile(url) {
+export function isAvailableFile(url: string): boolean {
     const extension = getExtension(url);
 
     if (!extension) {
@@ -191,11 +175,11 @@ export function isAvailableFile(url) {
 /**
  * Normalize route path. Add or delete slash before and after if it necessary.
  *
- * @param {String} path
+ * @param {string} path
  *
- * @return {String}
+ * @return {string}
  */
-export function normalizePath(path) {
+export function normalizePath(path: string): string {
     if (path.indexOf('/') !== 0) {
         path = `/${path}`;
     }

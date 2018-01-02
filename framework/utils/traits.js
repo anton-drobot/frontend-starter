@@ -1,26 +1,24 @@
+// @flow
+
 import InvalidArgumentException from '../Exceptions/InvalidArgumentException';
+
+const NOT_ACCEPTABLE = ['constructor', 'prototype', 'arguments', 'caller', 'name', 'bind', 'call', 'apply', 'toString', 'length'];
 
 /**
  * Applies all traits as part of the target class.
  *
- * @param {...Class|Object} traitsList
+ * @param {...Function} traitsList
  *
  * @return {function(*=)}
  */
-export function traits(...traitsList) {
-    return (target) => {
+export function traits(...traitsList: Function[]): Function {
+    return (target: Function): void => {
         traitsList.forEach((trait) => _addTrait(target, trait));
     };
 }
 
-function _filterKeys(key) {
-    const notAcceptable = ['constructor', 'prototype', 'arguments', 'caller', 'name', 'bind', 'call', 'apply', 'toString', 'length'];
-
-    return !notAcceptable.includes(key);
-}
-
-function _hasConflict(target, traitProto, methodName) {
-    const targetMethod = target[methodName];
+function _hasConflict(targetProto: Object, traitProto: Object, methodName: string): boolean {
+    const targetMethod = targetProto[methodName];
     const traitMethod = traitProto[methodName];
     const sameMethodName = (targetMethod && traitMethod);
     const methodsAreNotTheSame = sameMethodName && (targetMethod.toString() !== traitMethod.toString());
@@ -28,12 +26,12 @@ function _hasConflict(target, traitProto, methodName) {
     return (sameMethodName && methodsAreNotTheSame);
 }
 
-function _addTrait(target, trait) {
-    const traitProto = trait.prototype || trait;
-    const targetProto = target.prototype || target;
+function _addTrait(target: Function, trait: Function): void {
+    const traitProto = trait.prototype;
+    const targetProto = target.prototype;
 
     Object.getOwnPropertyNames(traitProto)
-        .filter(_filterKeys)
+        .filter((methodName) => !NOT_ACCEPTABLE.includes(methodName))
         .forEach((methodName) => {
             if (Object.prototype.toString.call(traitProto[methodName]) !== '[object Function]') {
                 throw InvalidArgumentException.invalidParameter(`Trait MUST NOT contain any state. Found: ${methodName} as state while processing trait`);

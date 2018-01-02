@@ -1,6 +1,6 @@
 import { CONFIG_PROVIDER } from '../../Providers/types';
 import Config from '../../Services/Config';
-import { parse, isAbsoluteUrl, isAppUrl, normalizePath } from '../../utils/url';
+import { parse, isAbsoluteUrl, isAppUrl, normalizePath } from '../../utils/url/index';
 
 describe('url', () => {
     test('parse', () => {

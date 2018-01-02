@@ -1,3 +1,5 @@
+// @flow
+
 import noop from 'lodash/noop';
 
 import { ENV_PROVIDER } from 'framework/Providers/types';
@@ -7,7 +9,7 @@ import { ENV_PROVIDER } from 'framework/Providers/types';
  *
  * @return {{push: Function|noop, replace: Function|noop}}
  */
-export function createHistory() {
+export function createHistory(): { push: (url: string) => void, replace: (url: string) => void } {
     const Env = global.Container.make(ENV_PROVIDER);
 
     const history = {

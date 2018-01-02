@@ -1,9 +1,11 @@
+// @flow
+
 /**
  * All extensions.
  *
- * @return {Array}
+ * @return {string[]}
  */
-export function allExtensions() {
+export function allExtensions(): string[] {
     return [
         ...defaultExtensions(),
         ...assetExtensions(),
@@ -16,9 +18,9 @@ export function allExtensions() {
 /**
  * Extensions that are particularly benign.
  *
- * @return {Array}
+ * @return {string[]}
  */
-export function defaultExtensions() {
+export function defaultExtensions(): string[] {
     return [
         'jpg',
         'jpeg',
@@ -60,9 +62,9 @@ export function defaultExtensions() {
 /**
  * Extensions seen as assets.
  *
- * @return {Array}
+ * @return {string[]}
  */
-export function assetExtensions() {
+export function assetExtensions(): string[] {
     return [
         'jpg',
         'jpeg',
@@ -87,9 +89,9 @@ export function assetExtensions() {
 /**
  * Extensions typically used as images.
  *
- * @return {Array}
+ * @return {string[]}
  */
-export function imageExtensions() {
+export function imageExtensions(): string[] {
     return [
         'jpg',
         'jpeg',
@@ -104,9 +106,9 @@ export function imageExtensions() {
 /**
  * Extensions typically used as video files.
  *
- * @return {Array}
+ * @return {string[]}
  */
-export function videoExtensions() {
+export function videoExtensions(): string[] {
     return [
         'mp4',
         'avi',
@@ -121,9 +123,9 @@ export function videoExtensions() {
 /**
  * Extensions typically used as audio files.
  *
- * @return {Array}
+ * @return {string[]}
  */
-export function audioExtensions() {
+export function audioExtensions(): string[] {
     return [
         'mp3',
         'wav',
