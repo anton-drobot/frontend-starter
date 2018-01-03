@@ -18,26 +18,14 @@ const browsers = [
     '> 1%',
     'last 4 versions',
     'Firefox ESR',
-    'not ie <= 9',
+    'not ie <= 10',
     'not bb <= 10'
 ];
 
 module.exports = {
     entry: (function () {
         const entry = {
-            vendor: [
-                'react',
-                'react-dom',
-                'react-helmet',
-                'mobx',
-                'mobx-react',
-                'serializr',
-                'url-parse',
-                'path-to-regexp'
-            ],
-            app: [
-                path.join(__dirname, 'bootstrap', 'client.js')
-            ]
+            app: path.join(__dirname, 'bootstrap', 'client', 'index.js')
         };
 
         if (isDev) {
@@ -49,7 +37,8 @@ module.exports = {
     output: {
         publicPath: '/assets/',
         path: path.join(__dirname, 'static', 'assets'),
-        filename: 'js/[name].js'
+        filename: 'js/[name].js',
+        chunkFilename: 'js/[name].chunk.js'
     },
     resolve: {
         modules: [
@@ -85,11 +74,12 @@ module.exports = {
                         {
                             loader: 'babel-loader',
                             options: {
+                                babelrc: false,
                                 presets: [
                                     [
                                         'env',
                                         {
-                                            browsers,
+                                            targets: { browsers },
                                             modules: false,
                                             useBuiltIns: true,
                                             exclude: [
@@ -101,6 +91,7 @@ module.exports = {
                                     'react'
                                 ],
                                 plugins: [
+                                    'syntax-dynamic-import',
                                     'transform-decorators-legacy',
                                     'transform-class-properties',
                                     'transform-object-rest-spread',
@@ -183,19 +174,23 @@ module.exports = {
             }),
             new webpack.ContextReplacementPlugin(/app[/\\]modules/, false),
             new webpack.optimize.CommonsChunkPlugin({
-                names: [
-                    'vendor'
-                ],
-                chunks: [
-                    'app'
-                ]
+                name: 'vendor',
+                minChunks: function(module) {
+                    return module.resource && /node_modules/.test(module.resource);
+                }
+            }),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'manifest'
             }),
             new SvgStorePlugin({
                 directory: path.resolve(__dirname, 'app', 'images'),
                 name: 'images/sprite.svg',
                 prefix: 'icon-',
             }),
-            new ExtractTextPlugin('css/app.css'),
+            new ExtractTextPlugin({
+                filename: 'css/app.css',
+                allChunks: true
+            }),
             new OptimizeCssAssetsPlugin({
                 cssProcessor: cssnano,
                 cssProcessorOptions: {
@@ -213,7 +208,7 @@ module.exports = {
         } else {
             plugins.push(new UglifyJSPlugin({
                 uglifyOptions: {
-                    ecma: 8,
+                    ecma: 5,
                     output: {
                         comments: false,
                         beautify: false
