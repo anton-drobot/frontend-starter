@@ -1,12 +1,3 @@
-import ConfigProvider from 'framework/Providers/ConfigProvider';
-import EnvProvider from 'framework/Providers/EnvProvider';
-import LangProvider from 'framework/Providers/LangProvider';
-import ModuleCollectionProvider from 'framework/Providers/ModuleCollectionProvider';
-import ModuleProvider from 'framework/Providers/ModuleProvider';
-import RouterProvider from 'framework/Providers/RouterProvider';
-import StoreCollectionProvider from 'framework/Providers/StoreCollectionProvider';
-import StoreProvider from 'framework/Providers/StoreProvider';
-
 import {
     MODULE_COLLECTION_PROVIDER,
     STORE_COLLECTION_PROVIDER,
@@ -16,17 +7,7 @@ import {
 
 import appConfig from 'config/app';
 
-export const providers = [
-    ConfigProvider,
-    EnvProvider,
-    LangProvider,
-    ModuleCollectionProvider,
-    ModuleProvider,
-    RouterProvider,
-    StoreCollectionProvider,
-    StoreProvider
-];
-
+import modules from 'app/modules';
 import * as ROUTES from 'app/routes';
 
 export async function registerApp() {
@@ -36,7 +17,6 @@ export async function registerApp() {
     const Config = global.Container.make(CONFIG_PROVIDER);
 
     Config.register('app', appConfig);
-    const { default: modules } = await import('app/modules');
 
     try {
         /**
