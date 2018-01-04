@@ -265,7 +265,7 @@ export default class Validator {
         return this._applyRecursivelyHelper(obj, callback, []);
     }
 
-    _applyRecursivelyHelper(obj, callback, path = []) {
+    _applyRecursivelyHelper(obj, callback, path) {
         const newObj = {};
 
         Object.keys(obj).forEach((key) => {

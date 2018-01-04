@@ -135,6 +135,7 @@ describe('Validator', () => {
         expect(v.validate({ x: 'asls1-_3dlks' }).passes()).toBe(true);
         expect(v.validate({ x: 'नमस्कार-_' }).passes()).toBe(true);
         expect(v.validate({ x: '٧٨٩' }).passes()).toBe(true); // eastern arabic numerals
+        expect(v.validate({ x: 123 }).passes()).toBe(true);
 
         expect(v.validate({ x: 'http://-g232oogle.com' }).passes()).toBe(false);
     });
@@ -147,6 +148,7 @@ describe('Validator', () => {
         expect(v.validate({ x: '१२३' }).passes()).toBe(true); // numbers in Hindi
         expect(v.validate({ x: '٧٨٩' }).passes()).toBe(true); // eastern arabic numerals
         expect(v.validate({ x: 'नमस्कार' }).passes()).toBe(true);
+        expect(v.validate({ x: 123 }).passes()).toBe(true);
 
         expect(v.validate({ x: 'http://g232oogle.com' }).passes()).toBe(false);
     });
