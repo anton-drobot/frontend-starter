@@ -27,15 +27,24 @@ function _hasConflict(targetProto: Object, traitProto: Object, methodName: strin
 }
 
 function _addTrait(target: Function, trait: Function): void {
+    if (Object.prototype.toString.call(trait) !== '[object Function]') {
+        throw InvalidArgumentException.invalidParameter('Trait MUST be a class');
+    }
+
     const traitProto = trait.prototype;
     const targetProto = target.prototype;
 
     Object.getOwnPropertyNames(traitProto)
         .filter((methodName) => !NOT_ACCEPTABLE.includes(methodName))
         .forEach((methodName) => {
+            /**
+             * @todo: need this?
+             */
+            /*
             if (Object.prototype.toString.call(traitProto[methodName]) !== '[object Function]') {
                 throw InvalidArgumentException.invalidParameter(`Trait MUST NOT contain any state. Found: ${methodName} as state while processing trait`);
             }
+            */
 
             if (_hasConflict(targetProto, traitProto, methodName)) {
                 throw InvalidArgumentException.invalidParameter(`Method named: ${methodName} is defined twice.`);
