@@ -1,29 +1,17 @@
 // @flow
 
-import type { LogicalExceptionInterface } from '../Exceptions/LogicalExceptionInterface';
+import LogicalException from '../Exceptions/LogicalException';
 
 /**
  * Normalize error object by setting required parameters if they does not exists.
  *
- * @param {LogicalException|Error} error
+ * @param {Error|LogicalException|Object} error
  *
- * @return {LogicalException|Error}
+ * @return {LogicalException}
  */
-export function normalizeError(error: Object): LogicalExceptionInterface {
-    error.message = error.message || 'Internal error';
-    error.status = error.status || 500;
-    error.code = error.code || 'E_INTERNAL_ERROR';
-    error.data = error.data || {};
-
-    if (!error.toJSON) {
-        error.toJSON = function () {
-            return {
-                message: this.message,
-                status: this.status,
-                code: this.code,
-                data: this.data
-            };
-        };
+export function normalizeError(error: Error | LogicalException | Object): LogicalException {
+    if (!(error instanceof LogicalException)) {
+        return new LogicalException(error.message, error.status, error.code, error.data);
     }
 
     return error;

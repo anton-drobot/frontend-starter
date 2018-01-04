@@ -15,7 +15,10 @@ export default class LogicalException extends Error implements LogicalExceptionI
     data: Object;
     stack: string;
 
-    constructor(message: string, status?: number = 500, code?: string = '', data?: Object = {}) {
+    constructor(message?: string, status?: number = 500, code?: string = 'E_INTERNAL_ERROR', data?: Object = {}) {
+        // because default value for argument didn't work if argument value is empty string.
+        message = message || 'Internal error';
+
         super(message);
 
         // extending Error is weird and does not propagate `message`

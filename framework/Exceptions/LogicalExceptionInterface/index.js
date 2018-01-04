@@ -7,6 +7,6 @@ export interface LogicalExceptionInterface {
     code: string,
     data: Object,
     stack?: string,
-    constructor(message: string, status?: number, code?: string, data?: Object): void,
+    constructor(message?: string, status?: number, code?: string, data?: Object): void,
     toJSON(): Object
 }
