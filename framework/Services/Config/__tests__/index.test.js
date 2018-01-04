@@ -1,4 +1,4 @@
-import Config from '../../Services/Config';
+import Config from '../index';
 
 describe('Config', () => {
     test('register', () => {

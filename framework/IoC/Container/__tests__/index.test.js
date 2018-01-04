@@ -1,4 +1,4 @@
-import Container from '../../IoC/Container';
+import Container from '../index';
 
 class A {}
 class B {}

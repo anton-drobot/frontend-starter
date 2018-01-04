@@ -1,4 +1,4 @@
-import Validator from '../../Services/Validator/Validator';
+import Validator from '../index';
 
 describe('Validator', () => {
     test('rules transformed correctly', () => {

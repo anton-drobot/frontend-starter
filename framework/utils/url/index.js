@@ -7,6 +7,7 @@ import type { LocationInterface } from './LocationInterface';
 
 import { allExtensions } from '../fileDefinitions';
 
+import inject from '../../IoC/inject';
 import { CONFIG_PROVIDER } from '../../Providers/types';
 
 /**
@@ -38,11 +39,9 @@ export function isAbsoluteUrl(url: string): boolean {
  *
  * @return {boolean}
  */
-export function isAppUrl(url: string): boolean {
-    const Config = global.Container.make(CONFIG_PROVIDER);
-
-    return url.indexOf(Config.get('app.baseUrl')) === 0;
-}
+export const isAppUrl = inject(CONFIG_PROVIDER)(function (config: Object, url: string): boolean {
+    return url.indexOf(config.get('app.baseUrl')) === 0;
+});
 
 /**
  * Returns absolute URL to the application.
@@ -59,9 +58,7 @@ export function isAppUrl(url: string): boolean {
  * appUrl('/path/'); // http://site.tld/path/
  * appUrl('http://other-site.tld/'); // http://other-site.tld/
  */
-export function appUrl(path: string, params?: Object | null = null, { baseUrl = true }: { baseUrl: boolean } = {}) {
-    const Config = global.Container.make(CONFIG_PROVIDER);
-
+export const appUrl = inject(CONFIG_PROVIDER)(function (config: Object, path: string, params?: Object | null = null, { baseUrl = true }: { baseUrl: boolean } = {}) {
     if (params) {
         const compile = pathToRegexp.compile(path);
         path = compile(params);
@@ -69,8 +66,8 @@ export function appUrl(path: string, params?: Object | null = null, { baseUrl = 
 
     path = normalizePath(path);
 
-    return new URL(path, baseUrl ? Config.get('app.baseUrl') : null).toString();
-}
+    return new URL(path, baseUrl ? config.get('app.baseUrl') : null).toString();
+});
 
 /**
  * This function is convenient when encoding a string to be used in a query part of a URL, as a convenient way to pass
@@ -179,21 +176,19 @@ export function isAvailableFile(url: string): boolean {
  *
  * @return {string}
  */
-export function normalizePath(path: string): string {
+export const normalizePath = inject(CONFIG_PROVIDER)(function (config: Object, path: string): string {
     if (path.indexOf('/') !== 0) {
         path = `/${path}`;
     }
 
     if (!isAvailableFile(path)) {
-        const Config = global.Container.make(CONFIG_PROVIDER);
-
-        if (Config.get('app.trailingSlash') === true) {
+        if (config.get('app.trailingSlash') === true) {
             if (path.lastIndexOf('/') !== (path.length - 1)) {
                 path = `${path}/`;
             }
         }
 
-        if (Config.get('app.trailingSlash') === false) {
+        if (config.get('app.trailingSlash') === false) {
             if (path.lastIndexOf('/') === (path.length - 1)) {
                 path = path.slice(0, -1);
             }
@@ -201,4 +196,4 @@ export function normalizePath(path: string): string {
     }
 
     return path;
-}
+});

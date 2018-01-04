@@ -1,6 +1,7 @@
-import { CONFIG_PROVIDER } from '../../Providers/types';
-import Config from '../../Services/Config';
-import { parse, isAbsoluteUrl, isAppUrl, normalizePath } from '../../utils/url/index';
+import Config from '../../../Services/Config';
+import { parse, isAbsoluteUrl, isAppUrl, normalizePath } from '../index';
+
+jest.mock('../../../IoC/inject');
 
 describe('url', () => {
     test('parse', () => {
@@ -56,19 +57,6 @@ describe('url', () => {
     });
 
     test('isAbsoluteUrl', () => {
-        const SERVICES = {
-            [CONFIG_PROVIDER]: () => {
-                const cfg = new Config();
-                cfg.register('app', { baseUrl: 'http://localhost:3000' });
-
-                return cfg;
-            }
-        };
-
-        global.Container = {
-            make: (type) => SERVICES[type]()
-        };
-
         expect(isAbsoluteUrl('http://google.com/')).toBe(true);
         expect(isAbsoluteUrl('https://google.com/')).toBe(true);
         expect(isAbsoluteUrl('//google.com/')).toBe(true);
@@ -82,55 +70,34 @@ describe('url', () => {
     });
 
     test('isAppUrl', () => {
-        expect(isAppUrl('http://localhost:3000')).toBe(true);
-        expect(isAppUrl('http://localhost:3000/foo/bar')).toBe(true);
+        const config = new Config();
+        config.register('app', { baseUrl: 'http://localhost:3000' });
 
-        expect(isAppUrl('http://google.com/')).toBe(false);
-        expect(isAppUrl('http://google.com/foo/bar')).toBe(false);
-        expect(isAppUrl('/foo/bar')).toBe(false);
+        expect(isAppUrl(config, 'http://localhost:3000')).toBe(true);
+        expect(isAppUrl(config, 'http://localhost:3000/foo/bar')).toBe(true);
+
+        expect(isAppUrl(config, 'http://google.com/')).toBe(false);
+        expect(isAppUrl(config, 'http://google.com/foo/bar')).toBe(false);
+        expect(isAppUrl(config, '/foo/bar')).toBe(false);
     });
 
     test('normalizePath', () => {
-        let SERVICES = {};
+        const config1 = new Config();
+        config1.register('app', { trailingSlash: null });
 
-        global.Container = {
-            make: (type) => SERVICES[type]()
-        };
+        expect(normalizePath(config1, 'path')).toBe('/path');
+        expect(normalizePath(config1, '/path')).toBe('/path');
 
-        SERVICES = {
-            [CONFIG_PROVIDER]: () => {
-                const cfg = new Config();
-                cfg.register('app', { trailingSlash: null });
+        const config2 = new Config();
+        config2.register('app', { trailingSlash: true });
 
-                return cfg;
-            }
-        };
+        expect(normalizePath(config2, '/path')).toBe('/path/');
+        expect(normalizePath(config2, '/path/')).toBe('/path/');
 
-        expect(normalizePath('path')).toBe('/path');
-        expect(normalizePath('/path')).toBe('/path');
+        const config3 = new Config();
+        config3.register('app', { trailingSlash: false });
 
-        SERVICES = {
-            [CONFIG_PROVIDER]: () => {
-                const cfg = new Config();
-                cfg.register('app', { trailingSlash: true });
-
-                return cfg;
-            }
-        };
-
-        expect(normalizePath('/path')).toBe('/path/');
-        expect(normalizePath('/path/')).toBe('/path/');
-
-        SERVICES = {
-            [CONFIG_PROVIDER]: () => {
-                const cfg = new Config();
-                cfg.register('app', { trailingSlash: false });
-
-                return cfg;
-            }
-        };
-
-        expect(normalizePath('/path')).toBe('/path');
-        expect(normalizePath('/path/')).toBe('/path');
+        expect(normalizePath(config3, '/path')).toBe('/path');
+        expect(normalizePath(config3, '/path/')).toBe('/path');
     });
 });
