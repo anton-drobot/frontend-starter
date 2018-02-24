@@ -22,7 +22,14 @@ describe('errors', () => {
             const error2 = new Error('Some message');
 
             expect(normalizeError(error1).message).toBe('Internal error');
+            expect(normalizeError(error1).status).toBe(500);
+            expect(normalizeError(error1).code).toBe('E_INTERNAL_ERROR');
+            expect(normalizeError(error1).data).toEqual({});
+
             expect(normalizeError(error2).message).toBe('Some message');
+            expect(normalizeError(error2).status).toBe(500);
+            expect(normalizeError(error2).code).toBe('E_INTERNAL_ERROR');
+            expect(normalizeError(error2).data).toEqual({});
         });
     });
 });

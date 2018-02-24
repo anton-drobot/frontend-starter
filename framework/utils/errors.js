@@ -9,9 +9,9 @@ import LogicalException from '../Exceptions/LogicalException';
  *
  * @return {LogicalException}
  */
-export function normalizeError(error: Error | LogicalException | Object): LogicalException {
+export function normalizeError(error: Error | LogicalException): LogicalException {
     if (!(error instanceof LogicalException)) {
-        return new LogicalException(error.message, error.status, error.code, error.data);
+        return new LogicalException(error.message);
     }
 
     return error;
