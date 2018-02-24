@@ -16,6 +16,4 @@ module.system.node.resolve_dirname=node_modules
 
 munge_underscores=true
 
-unsafe.enable_getters_and_setters=true
-
 [strict]

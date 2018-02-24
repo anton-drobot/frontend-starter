@@ -6,6 +6,7 @@ import {
 } from 'framework/Providers/types';
 
 import appConfig from 'config/app';
+import filesConfig from 'config/files';
 
 import modules from 'app/modules';
 import * as ROUTES from 'app/routes';
@@ -17,6 +18,7 @@ export async function registerApp() {
     const Config = global.Container.make(CONFIG_PROVIDER);
 
     Config.register('app', appConfig);
+    Config.register('files', filesConfig);
 
     try {
         /**

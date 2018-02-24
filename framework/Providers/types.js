@@ -8,4 +8,5 @@ export const ROUTER_PROVIDER = 'router';
 export const SERVER_PROVIDER = 'server';
 export const STORE_PROVIDER = 'store';
 export const STORE_COLLECTION_PROVIDER = 'store-collection';
+export const URL_PROVIDER = 'url';
 export const VALIDATOR_PROVIDER = 'validator';

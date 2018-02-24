@@ -10,6 +10,7 @@ import ModuleProvider from 'framework/Providers/ModuleProvider';
 import RouterProvider from 'framework/Providers/RouterProvider';
 import StoreCollectionProvider from 'framework/Providers/StoreCollectionProvider';
 import StoreProvider from 'framework/Providers/StoreProvider';
+import URLProvider from 'framework/Providers/URLProvider';
 
 /**
  * Start client code.
@@ -31,6 +32,7 @@ import StoreProvider from 'framework/Providers/StoreProvider';
                 RouterProvider,
                 StoreCollectionProvider,
                 StoreProvider,
+                URLProvider,
 
                 // Client Providers
                 ClientLoggerProvider

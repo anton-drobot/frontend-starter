@@ -11,6 +11,7 @@ import ServerLoggerProvider from 'framework/Providers/ServerLoggerProvider';
 import ServerProvider from 'framework/Providers/ServerProvider';
 import StoreCollectionProvider from 'framework/Providers/StoreCollectionProvider';
 import StoreProvider from 'framework/Providers/StoreProvider';
+import URLProvider from 'framework/Providers/URLProvider';
 
 /**
  * Start server instance.
@@ -32,6 +33,7 @@ export default async function start() {
                 RouterProvider,
                 StoreCollectionProvider,
                 StoreProvider,
+                URLProvider,
 
                 // Server Providers
                 ServerLoggerProvider,

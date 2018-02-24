@@ -1,8 +1,6 @@
-import { allExtensions } from '../fileDefinitions';
-
-describe('fileDefinitions', () => {
-    test('allExtensions', () => {
-        expect(allExtensions()).toEqual([
+export default {
+    availableExtensions: {
+        default: [
             'jpg',
             'jpeg',
             'bmp',
@@ -36,7 +34,9 @@ describe('fileDefinitions', () => {
             'webm',
             'mkv',
             'rar',
-            'zip',
+            'zip'
+        ],
+        assets: [
             'jpg',
             'jpeg',
             'bmp',
@@ -53,26 +53,33 @@ describe('fileDefinitions', () => {
             'md',
             'less',
             'sass',
-            'scss',
+            'scss'
+        ],
+        images: [
             'jpg',
             'jpeg',
             'bmp',
             'png',
             'gif',
             'svg',
-            'webp',
+            'webp'
+        ],
+        videos: [
             'mp4',
             'avi',
             'mov',
             'mpg',
             'mpeg',
             'mkv',
-            'webm',
+            'webm'
+        ],
+        audio: [
             'mp3',
             'wav',
             'wma',
             'm4a',
             'ogg'
-        ]);
-    });
-});
+        ],
+        misc: []
+    }
+};
