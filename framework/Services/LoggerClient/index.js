@@ -1,4 +1,4 @@
-export default class ClientLogger {
+export default class LoggerClient {
     constructor(prefix, level) {
         this._prefix = prefix;
         this._level = level;

@@ -1,8 +1,6 @@
 import noop from 'lodash/noop';
 import { createHistory } from '../browserHistory';
 
-jest.mock('../../IoC/inject');
-
 describe('browserHistory', () => {
     describe('createHistory', () => {
         test('server side', () => {

@@ -2,14 +2,15 @@ import { observable, action } from 'mobx';
 import pathToRegexp from 'path-to-regexp';
 import { serializable } from 'serializr';
 
-import { STORE_PROVIDER } from 'framework/Providers/types';
+import { ENV_PROVIDER, STORE_PROVIDER, URL_PROVIDER } from 'framework/Providers/types';
 import { createHistory } from 'framework/utils/browserHistory';
-import { parse } from 'framework/utils/url';
 
+const URL = global.Container.make(URL_PROVIDER);
+const Env = global.Container.make(ENV_PROVIDER);
 const Store = global.Container.make(STORE_PROVIDER);
 
 export default class RouterStore extends Store {
-    _history = createHistory();
+    _history = createHistory(Env);
     _routes = {};
 
     @observable location;
@@ -39,7 +40,7 @@ export default class RouterStore extends Store {
 
     @action
     setLocation(url) {
-        this.location = parse(url);
+        this.location = new URL(url);
     }
 
     @action
@@ -62,7 +63,7 @@ export default class RouterStore extends Store {
     }
 
     isApplicationUrl(url) {
-        const location = parse(url);
+        const location = new URL(url);
 
         return Object.values(this._routes).findIndex(({ pattern }) => pattern.test(location.pathname)) !== -1;
     }

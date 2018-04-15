@@ -1,8 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { bem, mix } from 'app/utils/bem';
-import { appUrl } from 'framework/utils/url';
 
+import { URL_PROVIDER } from 'framework/Providers/types';
+import { bem, mix } from 'app/utils/bem';
+
+const URL = global.Container.make(URL_PROVIDER);
 const b = bem('Icon');
 
 function Icon(props) {
@@ -12,9 +14,11 @@ function Icon(props) {
         ...restProps
     } = props;
 
+    const link = (new URL).makeApp(`/assets/images/sprite.svg#icon-${glyph}`);
+
     return (
         <svg {...restProps} className={mix(b({ [glyph]: true }), className)}>
-            <use xlinkHref={appUrl(`/assets/images/sprite.svg#icon-${glyph}`)} />
+            <use xlinkHref={link} />
         </svg>
     );
 }

@@ -2,9 +2,6 @@
 
 import noop from 'lodash/noop';
 
-import inject from '../IoC/inject';
-import { ENV_PROVIDER } from '../Providers/types';
-
 function push(url) {
     window.history.pushState({ url }, url, url);
 }
@@ -16,9 +13,11 @@ function replace(url) {
 /**
  * Create HistoryAPI for browser or emulation for server.
  *
+ * @param {Object} env - Dependency.
+ *
  * @return {{push: push|noop, replace: replace|noop}}
  */
-export const createHistory = inject(ENV_PROVIDER)(function (env: Object): { push: (url: string) => void, replace: (url: string) => void } {
+export function createHistory(env: Object): { push: (url: string) => void, replace: (url: string) => void } {
     if (env.isClientSide) {
         return {
             push,
@@ -30,4 +29,4 @@ export const createHistory = inject(ENV_PROVIDER)(function (env: Object): { push
         push: noop,
         replace: noop
     };
-});
+}

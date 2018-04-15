@@ -69,7 +69,7 @@ describe('URL', () => {
     test('make', () => {
         const config = new Config();
 
-        expect(new URL(config).make('http://example.com/').href).toBe('http://example.com');
+        expect(new URL(config).make('http://example.com/').href).toBe('http://example.com/');
         expect(new URL(config).make('http://example.com/foo/:bar', { bar: 'baz' }).href).toBe('http://example.com/foo/baz');
     });
 

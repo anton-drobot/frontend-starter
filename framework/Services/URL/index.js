@@ -19,7 +19,11 @@ export default class URL extends URLParse implements URLInterface {
      */
     _availableExtensions: string[];
 
-    constructor(config: Object, address: string = ''): URLInterface {
+    constructor(config: Object, address: string | URL = ''): URLInterface {
+        if (address instanceof URL) {
+            address = address.toString();
+        }
+
         super(address);
 
         this._config = config;

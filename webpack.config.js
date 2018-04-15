@@ -47,14 +47,10 @@ module.exports = {
         ],
         extensions: ['.js']
     },
-    target: 'web',
     watch: false,
     bail: false,
     profile: true,
     devtool: isDev ? 'cheap-source-map' : 'source-map',
-    node: {
-        fs: 'empty'
-    },
     stats: {
         assets: false,
         hash: false,

@@ -85,11 +85,11 @@ describe('URLParse', () => {
         expect(location6.host).toBe('example.com');
         expect(location6.hostname).toBe('example.com');
         expect(location6.port).toBe(null);
-        expect(location6.pathname).toBe('');
+        expect(location6.pathname).toBe('/');
         expect(location6.search).toBe('');
         expect(location6.query).toEqual({});
         expect(location6.hash).toBe('');
-        expect(location6.href).toBe('http://username@example.com');
+        expect(location6.href).toBe('http://username@example.com/');
         expect(location6.origin).toBe('http://example.com');
 
         const location7 = new URLParse('data:text/html,%3Ch1%3EHello%2C%20World!%3C%2Fh1%3E');
@@ -153,17 +153,17 @@ describe('URLParse', () => {
         expect(location10.origin).toBe('');
     });
 
-    test('no slash in pathname', () => {
-        expect(new URLParse('http://example.com').pathname).toBe('');
-        expect(new URLParse('http://example.com/').pathname).toBe('');
+    test('slash in pathname', () => {
+        expect(new URLParse('http://example.com').pathname).toBe('/');
+        expect(new URLParse('http://example.com/').pathname).toBe('/');
     });
 
     test('no default protocol', () => {
-        expect(new URLParse('http://example.com:80').toString()).toBe('http://example.com');
-        expect(new URLParse('ws://example.com:80').toString()).toBe('ws://example.com');
-        expect(new URLParse('https://example.com:443').toString()).toBe('https://example.com');
-        expect(new URLParse('wss://example.com:443').toString()).toBe('wss://example.com');
-        expect(new URLParse('ftp://example.com:21').toString()).toBe('ftp://example.com');
+        expect(new URLParse('http://example.com:80/').toString()).toBe('http://example.com/');
+        expect(new URLParse('ws://example.com:80/').toString()).toBe('ws://example.com/');
+        expect(new URLParse('https://example.com:443/').toString()).toBe('https://example.com/');
+        expect(new URLParse('wss://example.com:443/').toString()).toBe('wss://example.com/');
+        expect(new URLParse('ftp://example.com:21/').toString()).toBe('ftp://example.com/');
     });
 
     test('correct host after removing default protocol', () => {
@@ -178,7 +178,7 @@ describe('URLParse', () => {
         const location = new URLParse('http://example.com');
         location.protocol = 'https';
 
-        expect(location.toString()).toBe('https://example.com');
+        expect(location.toString()).toBe('https://example.com/');
     });
 
     test('add question mark', () => {

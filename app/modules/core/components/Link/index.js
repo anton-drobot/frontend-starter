@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import bindAll from 'lodash/bindAll';
 
 import { bem, mix } from 'app/utils/bem';
 
@@ -15,7 +16,8 @@ export default class Link extends Component {
         router: PropTypes.instanceOf(RouterStore),
         className: PropTypes.string,
         theme: PropTypes.string,
-        href: PropTypes.string.isRequired,
+        // TODO: href: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(URL)]).isRequired
+        href: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
         target: PropTypes.string,
         rel: PropTypes.string,
         replace: PropTypes.bool,
@@ -29,9 +31,13 @@ export default class Link extends Component {
         scrollTo: 0
     };
 
-    isModifiedEvent = (e) => Boolean(e.metaKey || e.altKey || e.ctrlKey || e.shiftKey);
+    constructor(...args) {
+        super(...args);
 
-    onClick = (e) => {
+        bindAll(this, ['onClick']);
+    }
+
+    onClick(e) {
         const {
             router,
             href,
@@ -59,6 +65,10 @@ export default class Link extends Component {
         window.scrollTo(scrollTo, 0);
     };
 
+    isModifiedEvent(e) {
+        return Boolean(e.metaKey || e.altKey || e.ctrlKey || e.shiftKey);
+    }
+
     render() {
         const {
             className,
@@ -82,10 +92,6 @@ export default class Link extends Component {
             relList.push('noopener');
         }
 
-        /**
-         * todo: не работает ссылка, если есть target.
-         * Кажется, где-то в коде реакта есть return у event, поэтому браузер не знает, что делать с такой ссылкой.
-         */
         return (
             <a
                 {...props}
@@ -93,7 +99,7 @@ export default class Link extends Component {
                 href={href}
                 target={target}
                 rel={relList.join(' ') || null}
-                onClick={target !== '_blank' && this.onClick}
+                onClick={target !== '_blank' ? this.onClick : null}
             >
                 {children}
             </a>

@@ -5,6 +5,7 @@ import bodyParser from 'koa-bodyparser';
 import uuid from 'uuid/v4';
 import ms from 'ms';
 import bytes from 'bytes';
+import escape from 'lodash/escape';
 
 import webpack from 'webpack';
 import { devMiddleware } from 'koa-webpack-middleware';
@@ -17,7 +18,7 @@ export default class Server {
     _appInstance;
 
     /**
-     * @param {Env} Env - Dependency.
+     * @param {EnvServer} Env - Dependency.
      * @param {Config} Config - Dependency.
      * @param {Logger} Logger - Dependency.
      * @param {Router} Router
@@ -133,6 +134,19 @@ export default class Server {
         } catch(error) {
             const normalizedError = normalizeError(error);
             context.status = normalizedError.status;
+
+            if (this._env.isDevelopment) {
+                context.body = `<!DOCTYPE html>
+                                <html>
+                                    <head>
+                                        <meta charset="utf-8">
+                                    </head>
+                                    <body>
+                                        <pre>${escape(error.stack)}</pre>
+                                    </body>
+                                </html>`;
+            }
+
             this._logger.error(normalizedError);
         }
     }
@@ -148,8 +162,8 @@ export default class Server {
     /**
      * Starting a server on a given port and host.
      *
-     * @param {String} host
-     * @param {Number} port
+     * @param {String} [host='localhost']
+     * @param {Number} [port=3000]
      *
      * @return {http.Server}
      *
@@ -158,7 +172,7 @@ export default class Server {
      *
      * @public
      */
-    listen(host, port) {
+    listen(host = 'localhost', port = 3000) {
         this._logger.info('Serving app on %s:%s', host, port);
 
         return this.getInstance().listen(port, host);

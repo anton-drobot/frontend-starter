@@ -1,9 +1,16 @@
-import dotenv from 'dotenv';
-
 /**
- * Manage environment variables by reading .env file inside the project root.
+ * Manage environment variables.
  */
-export default class Env {
+export default class EnvServer {
+    /**
+     * Env store.
+     *
+     * @type {Object}
+     *
+     * @private
+     */
+    _env = {};
+
     /**
      * Is development environment.
      *
@@ -30,40 +37,14 @@ export default class Env {
      *
      * @type {Boolean}
      */
-    isServerSide = typeof global === 'object' && global.global === global;
+    isServerSide = false;
 
     /**
      * Is client side.
      *
      * @type {Boolean}
      */
-    isClientSide = !this.isServerSide;
-
-    constructor() {
-        const options = {
-            path: this.envPath,
-            encoding: process.env.ENV_ENCODING || 'utf8'
-        };
-
-        dotenv.load(options);
-    }
-
-    /**
-     * Returns envPath by checking the environment variables.
-     *
-     * @method envPath
-     *
-     * @return {String}
-     *
-     * @public
-     */
-    get envPath() {
-        if (!process.env.ENV_PATH) {
-            return '.env';
-        }
-
-        return process.env.ENV_PATH;
-    }
+    isClientSide = true;
 
     /**
      * Get value of an existing key from env file.
@@ -79,8 +60,8 @@ export default class Env {
      *
      * @public
      */
-    get(key, defaultValue = null) {
-        let returnValue = process.env[key] || defaultValue;
+    get(key, defaultValue) {
+        let returnValue = this._env[key] || defaultValue;
 
         if (returnValue === 'true' || returnValue === '1') {
             return true;
@@ -105,7 +86,6 @@ export default class Env {
      * @public
      */
     set(key, value) {
-        process.env[key] = value;
+        this._env[key] = value;
     }
 }
-

@@ -269,13 +269,13 @@ export default class URLParse implements LocationInterface {
                 this.pathname = this._tempAddress.slice(index);
                 this._tempAddress = this._tempAddress.slice(0, index);
             }
-        }
 
-        /**
-         * Required for consistency when parsing values like "http://example.com/" and "http://example.com".
-         */
-        if (this.protocol !== 'file:' && this.pathname === '/') {
-            this.pathname = '';
+            /**
+             * Required for consistency when parsing values like "http://example.com/" and "http://example.com".
+             */
+            if (this.pathname === '') {
+                this.pathname = '/';
+            }
         }
     }
 

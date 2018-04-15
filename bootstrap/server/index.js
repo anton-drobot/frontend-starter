@@ -2,12 +2,12 @@ import Container from 'framework/IoC/Container';
 import Registrar from 'framework/IoC/Registrar';
 
 import ConfigProvider from 'framework/Providers/ConfigProvider';
-import EnvProvider from 'framework/Providers/EnvProvider';
+import EnvServerProvider from 'framework/Providers/EnvServerProvider';
 import LangProvider from 'framework/Providers/LangProvider';
+import LoggerServerProvider from 'framework/Providers/LoggerServerProvider';
 import ModuleCollectionProvider from 'framework/Providers/ModuleCollectionProvider';
 import ModuleProvider from 'framework/Providers/ModuleProvider';
 import RouterProvider from 'framework/Providers/RouterProvider';
-import ServerLoggerProvider from 'framework/Providers/ServerLoggerProvider';
 import ServerProvider from 'framework/Providers/ServerProvider';
 import StoreCollectionProvider from 'framework/Providers/StoreCollectionProvider';
 import StoreProvider from 'framework/Providers/StoreProvider';
@@ -26,7 +26,6 @@ export default async function start() {
             .register([
                 // Common Providers
                 ConfigProvider,
-                EnvProvider,
                 LangProvider,
                 ModuleCollectionProvider,
                 ModuleProvider,
@@ -36,7 +35,8 @@ export default async function start() {
                 URLProvider,
 
                 // Server Providers
-                ServerLoggerProvider,
+                EnvServerProvider,
+                LoggerServerProvider,
                 ServerProvider
             ]);
 

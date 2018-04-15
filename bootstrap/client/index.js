@@ -2,9 +2,9 @@ import Container from 'framework/IoC/Container';
 import Registrar from 'framework/IoC/Registrar';
 
 import ConfigProvider from 'framework/Providers/ConfigProvider';
-import ClientLoggerProvider from 'framework/Providers/ClientLoggerProvider';
-import EnvProvider from 'framework/Providers/EnvProvider';
+import EnvClientProvider from 'framework/Providers/EnvClientProvider';
 import LangProvider from 'framework/Providers/LangProvider';
+import LoggerClientProvider from 'framework/Providers/LoggerClientProvider';
 import ModuleCollectionProvider from 'framework/Providers/ModuleCollectionProvider';
 import ModuleProvider from 'framework/Providers/ModuleProvider';
 import RouterProvider from 'framework/Providers/RouterProvider';
@@ -25,7 +25,6 @@ import URLProvider from 'framework/Providers/URLProvider';
             .register([
                 // Common Providers
                 ConfigProvider,
-                EnvProvider,
                 LangProvider,
                 ModuleCollectionProvider,
                 ModuleProvider,
@@ -35,7 +34,8 @@ import URLProvider from 'framework/Providers/URLProvider';
                 URLProvider,
 
                 // Client Providers
-                ClientLoggerProvider
+                EnvClientProvider,
+                LoggerClientProvider
             ]);
 
         const { default: init } = await import(/* webpackMode: "eager" */ 'bootstrap/client/init');

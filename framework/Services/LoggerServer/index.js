@@ -1,7 +1,7 @@
 import CatLog from 'cat-log';
 import ms from 'ms';
 
-export default class ServerLogger extends CatLog {
+export default class LoggerServer extends CatLog {
     /**
      * returns time to be displayed for logs
      *

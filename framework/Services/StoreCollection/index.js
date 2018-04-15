@@ -35,7 +35,7 @@ export default class StoreCollection {
     _schema;
 
     /**
-     * @param {Env} Env - Dependency.
+     * @param {EnvServer} Env - Dependency.
      */
     constructor(Env) {
         this._env = Env;
