@@ -29,17 +29,6 @@ export default async function init() {
         document.querySelector('#app')
     );
 
-    //if (module.hot) {
-    //    module.hot.accept('app/modules/core/components/App', async () => {
-    //        render(
-    //            <Provider {...stores}>
-    //                <App />
-    //            </Provider>,
-    //            document.querySelector('#app')
-    //        );
-    //    });
-    //}
-
     window.addEventListener('popstate', () => {
         store.router.setLocation(window.location.href);
     }, false);

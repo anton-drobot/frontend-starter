@@ -1,4 +1,4 @@
-import { transaction } from 'mobx';
+import { transaction, configure } from 'mobx';
 import {
     createSimpleSchema,
     serialize,
@@ -39,6 +39,11 @@ export default class StoreCollection {
      */
     constructor(Env) {
         this._env = Env;
+
+        configure({
+            enforceActions: true, // don't allow state modifications outside actions
+            isolateGlobalState: true
+        });
     }
 
     /**

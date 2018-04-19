@@ -23,17 +23,9 @@ const browsers = [
 ];
 
 module.exports = {
-    entry: (function () {
-        const entry = {
-            app: path.join(__dirname, 'bootstrap', 'client', 'index.js')
-        };
-
-        if (isDev) {
-            //entry.app.unshift('webpack-hot-middleware/client?path=__webpack_hmr&timeout=20000&dynamicPublicPath=true', 'react-hot-loader/patch');
-        }
-
-        return entry;
-    })(),
+    entry: {
+        app: path.join(__dirname, 'bootstrap', 'client', 'index.js')
+    },
     output: {
         publicPath: '/assets/',
         path: path.join(__dirname, 'static', 'assets'),
@@ -47,6 +39,7 @@ module.exports = {
         ],
         extensions: ['.js']
     },
+    mode: isDev ? 'development' : 'production',
     watch: false,
     bail: false,
     profile: true,
@@ -163,21 +156,7 @@ module.exports = {
     },
     plugins: (function () {
         const plugins = [
-            new webpack.DefinePlugin({
-                'process.env': {
-                    NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-                }
-            }),
             new webpack.ContextReplacementPlugin(/app[/\\]modules/, false),
-            new webpack.optimize.CommonsChunkPlugin({
-                name: 'vendor',
-                minChunks: function(module) {
-                    return module.resource && /node_modules/.test(module.resource);
-                }
-            }),
-            new webpack.optimize.CommonsChunkPlugin({
-                name: 'manifest'
-            }),
             new SvgStorePlugin({
                 directory: path.resolve(__dirname, 'app', 'images'),
                 name: 'images/sprite.svg',
@@ -214,6 +193,19 @@ module.exports = {
         }
 
         return plugins;
-    })()
+    })(),
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendor',
+                    chunks: 'all'
+                }
+            }
+        },
+        runtimeChunk: {
+            name: 'manifest',
+        },
+    }
 };
-

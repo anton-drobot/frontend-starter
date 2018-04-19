@@ -60,16 +60,10 @@ export default class Server {
 
             this._appInstance.use(devMiddleware(compiler, {
                 noInfo: true,
-                lazy: true,
+                lazy: false,
                 publicPath: webpackConfig.output.publicPath,
                 stats: 'errors-only',
             }));
-
-            /*
-            this._appInstance.use(hotMiddleware(compiler, {
-                path: '/assets/__webpack_hmr'
-            }));
-            */
         }
 
         /**
