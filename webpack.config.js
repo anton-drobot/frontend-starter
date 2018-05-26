@@ -1,8 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const SvgStorePlugin = require('webpack-external-svg-sprite');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { ReactLoadablePlugin } = require('react-loadable/webpack');
 const WriteFilePlugin = require('write-file-webpack-plugin');
@@ -114,38 +114,36 @@ module.exports = {
                     /node_modules/,
                     /static/
                 ],
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: [
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                importLoaders: 2
-                            }
-                        },
-                        {
-                            loader: 'postcss-loader',
-                            options: {
-                                plugins: [
-                                    postcssFlexbugsFixes(),
-                                    autoprefixer({ browsers })
-                                ]
-                            }
-                        },
-                        {
-                            loader: 'sass-loader',
-                            options: {
-                                importer: sassImportOnce,
-                                importOnce: {
-                                    index: true
-                                },
-                                includePaths: [
-                                    path.resolve(__dirname)
-                                ]
-                            }
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 2
                         }
-                    ]
-                })
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: [
+                                postcssFlexbugsFixes(),
+                                autoprefixer({ browsers })
+                            ]
+                        }
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            importer: sassImportOnce,
+                            importOnce: {
+                                index: true
+                            },
+                            includePaths: [
+                                path.resolve(__dirname)
+                            ]
+                        }
+                    }
+                ]
             }
         ]
     },
@@ -157,19 +155,9 @@ module.exports = {
                 name: 'images/sprite.svg',
                 prefix: 'icon-',
             }),
-            new ExtractTextPlugin({
-                filename: 'css/app.css',
-                allChunks: true
-            }),
-            new OptimizeCssAssetsPlugin({
-                cssProcessor: cssnano,
-                cssProcessorOptions: {
-                    autoprefixer: false,
-                    svgo: false,
-                    //discardComments: !isDev,
-                    //normalizeWhitespace: !isDev
-                },
-                canPrint: true
+            new MiniCssExtractPlugin({
+                filename: '[name].css',
+                chunkFilename: '[name].chunk.css'
             }),
             new ReactLoadablePlugin({
                 filename: path.join('build', 'react-loadable.json')
@@ -177,19 +165,11 @@ module.exports = {
         ];
 
         if (isDev) {
-            plugins.push(new WriteFilePlugin({
-                test: /react-loadable\.json$/
-            }));
-        } else {
-            plugins.push(new UglifyJSPlugin({
-                uglifyOptions: {
-                    ecma: 5,
-                    output: {
-                        comments: false,
-                        beautify: false
-                    }
-                }
-            }));
+            plugins.push(
+                new WriteFilePlugin({
+                    test: /react-loadable\.json$/
+                })
+            );
         }
 
         return plugins;
@@ -207,5 +187,37 @@ module.exports = {
         runtimeChunk: {
             name: 'manifest',
         },
+        minimizer: (function () {
+            const plugins = [
+                new OptimizeCssAssetsPlugin({
+                    cssProcessor: cssnano,
+                    cssProcessorOptions: {
+                        autoprefixer: false,
+                        svgo: false,
+                        //discardComments: !isDev,
+                        //normalizeWhitespace: !isDev
+                    },
+                    canPrint: true
+                })
+            ];
+
+            if (!isDev) {
+                plugins.push(
+                    new UglifyJSPlugin({
+                        cache: true,
+                        parallel: true,
+                        uglifyOptions: {
+                            ecma: 5,
+                            output: {
+                                comments: false,
+                                beautify: false
+                            }
+                        }
+                    }),
+                );
+            }
+
+            return plugins;
+        })()
     }
 };
