@@ -170,6 +170,10 @@ module.exports = {
                     test: /react-loadable\.json$/
                 })
             );
+        } else {
+            plugins.push(
+                new webpack.optimize.ModuleConcatenationPlugin(),
+            );
         }
 
         return plugins;
