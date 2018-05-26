@@ -4,6 +4,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const SvgStorePlugin = require('webpack-external-svg-sprite');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { ReactLoadablePlugin } = require('react-loadable/webpack');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 
 // PostCSS, TODO: node-css-mqpacker, postcss-sprites
 const sassImportOnce = require('node-sass-import-once');
@@ -58,51 +60,44 @@ module.exports = {
                     /node_modules/,
                     /static/
                 ],
-                use: (function () {
-                    const loaders = [
-                        {
-                            loader: 'babel-loader',
-                            options: {
-                                babelrc: false,
-                                presets: [
-                                    [
-                                        'env',
-                                        {
-                                            targets: { browsers },
-                                            modules: false,
-                                            useBuiltIns: true,
-                                            exclude: [
-                                                'transform-exponentiation-operator',
-                                            ]
-                                        }
-                                    ],
-                                    'flow',
-                                    'react'
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            babelrc: false,
+                            presets: [
+                                [
+                                    'env',
+                                    {
+                                        targets: { browsers },
+                                        modules: false,
+                                        useBuiltIns: true,
+                                        exclude: [
+                                            'transform-exponentiation-operator',
+                                        ]
+                                    }
                                 ],
-                                plugins: [
-                                    'syntax-dynamic-import',
-                                    'transform-decorators-legacy',
-                                    'transform-class-properties',
-                                    'transform-object-rest-spread',
-                                    [
-                                        'transform-runtime',
-                                        {
-                                            'helpers': false,
-                                            'polyfill': false,
-                                            'regenerator': true
-                                        }
-                                    ]
-                                ]
-                            }
+                                'flow',
+                                'react'
+                            ],
+                            plugins: [
+                                'syntax-dynamic-import',
+                                'transform-decorators-legacy',
+                                'transform-class-properties',
+                                'transform-object-rest-spread',
+                                [
+                                    'transform-runtime',
+                                    {
+                                        'helpers': false,
+                                        'polyfill': false,
+                                        'regenerator': true
+                                    }
+                                ],
+                                'react-loadable/babel'
+                            ]
                         }
-                    ];
-
-                    if (isDev) {
-                        //loaders.unshift('react-hot-loader/webpack');
                     }
-
-                    return loaders;
-                })()
+                ]
             },
             {
                 test: /app\/modules\/(.*)\/components\/(.*)\/index\.js$/,
@@ -175,11 +170,16 @@ module.exports = {
                     //normalizeWhitespace: !isDev
                 },
                 canPrint: true
+            }),
+            new ReactLoadablePlugin({
+                filename: path.join('build', 'react-loadable.json')
             })
         ];
 
         if (isDev) {
-            //plugins.push(new webpack.HotModuleReplacementPlugin());
+            plugins.push(new WriteFilePlugin({
+                test: /react-loadable\.json$/
+            }));
         } else {
             plugins.push(new UglifyJSPlugin({
                 uglifyOptions: {

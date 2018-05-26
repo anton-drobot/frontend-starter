@@ -1,7 +1,11 @@
+/* eslint-disable react/jsx-no-bind */
+
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Provider, useStaticRendering } from 'mobx-react';
 import { Helmet } from 'react-helmet';
+import { Capture } from 'react-loadable';
+import { getBundles } from 'react-loadable/webpack'
 
 import {
     ENV_PROVIDER,
@@ -42,6 +46,7 @@ export default async function init() {
     Router.match(['GET', 'HEAD', 'POST'], '(.*)', async (context) => {
         await onRequest();
 
+        const modules = [];
         const store = StoreCollection.store();
 
         context.type = 'text/html';
@@ -51,14 +56,18 @@ export default async function init() {
         store.router.setHttpStatus(context.status);
 
         const markup = renderToString(
-            <Provider {...store}>
-                <App />
-            </Provider>
+            <Capture report={moduleName => modules.push(moduleName)}>
+                <Provider {...store}>
+                    <App />
+                </Provider>
+            </Capture>
         );
 
         const helmet = Helmet.renderStatic();
+        const stats = await import('build/react-loadable.json');
+        const bundles = getBundles(stats, modules);
 
-        return layout(context, markup, helmet, StoreCollection);
+        return layout(context, markup, helmet, bundles, StoreCollection);
     });
 
     Server.listen(Env.get('HOST'), Env.get('PORT'));

@@ -1,4 +1,5 @@
 import React from 'react';
+import Loadable from 'react-loadable';
 import { hydrate } from 'react-dom';
 import { Provider } from 'mobx-react';
 
@@ -11,6 +12,8 @@ import App from 'app/modules/core/components/App';
  * Initialize application.
  */
 export default async function init() {
+    await Loadable.preloadReady();
+
     const StoreCollection = global.Container.make(STORE_COLLECTION_PROVIDER);
 
     /**

@@ -6,6 +6,7 @@ import uuid from 'uuid/v4';
 import ms from 'ms';
 import bytes from 'bytes';
 import escape from 'lodash/escape';
+import Loadable from 'react-loadable';
 
 import webpack from 'webpack';
 import { devMiddleware } from 'koa-webpack-middleware';
@@ -159,7 +160,7 @@ export default class Server {
      * @param {String} [host='localhost']
      * @param {Number} [port=3000]
      *
-     * @return {http.Server}
+     * @return {Promise<http.Server>}
      *
      * @example
      * Server.listen('localhost', 3000);
@@ -167,8 +168,16 @@ export default class Server {
      * @public
      */
     listen(host = 'localhost', port = 3000) {
-        this._logger.info('Serving app on %s:%s', host, port);
+        const instance = this.getInstance();
 
-        return this.getInstance().listen(port, host);
+        return Loadable.preloadAll()
+            .then(() => {
+                this._logger.info('Serving app on %s:%s', host, port);
+
+                instance.listen(port, host);
+            })
+            .catch((error) => {
+                this._logger.error(error);
+            });
     }
 }
