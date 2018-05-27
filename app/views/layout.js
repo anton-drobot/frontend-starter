@@ -28,7 +28,7 @@ export default function layout(context, markup, helmet, bundles, StoreCollection
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 ${helmet.title.toString()}
                 ${helmet.meta.toString()}
-                <link rel="stylesheet" href="${(new URL).makeApp('/assets/css/styles.css')}">
+                <link rel="stylesheet" href="${(new URL).makeApp('/assets/css/app.chunk.css')}">
                 ${styles.map(({ file }) => `<link rel="stylesheet" href="/assets/${file}">`).join()}
                 ${helmet.link.toString()}
             </head>

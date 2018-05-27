@@ -156,8 +156,8 @@ module.exports = {
                 prefix: 'icon-',
             }),
             new MiniCssExtractPlugin({
-                filename: '[name].css',
-                chunkFilename: '[name].chunk.css'
+                filename: 'css/[name].css',
+                chunkFilename: 'css/[name].chunk.css'
             }),
             new ReactLoadablePlugin({
                 filename: path.join('build', 'react-loadable.json')
