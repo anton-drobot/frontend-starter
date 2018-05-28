@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 
-import { bem, mix } from 'app/utils/bem';
+import { bem, mix } from 'app/libs/bem';
 
 import UiStateStore from 'app/modules/controls/stores/UiState';
 

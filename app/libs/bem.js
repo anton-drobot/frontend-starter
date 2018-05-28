@@ -67,7 +67,7 @@ export function mix(classes, mixes) {
  * @return {function(...[String|Object])}
  *
  * @example
- * import { bem, bemMix } from 'app/utils/bem';
+ * import { bem, bemMix } from 'app/libs/bem';
  * const b = bem('button');
  *
  * b(); // button

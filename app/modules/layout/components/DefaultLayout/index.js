@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
-import { bem } from 'app/utils/bem';
+import { bem } from 'app/libs/bem';
 
 import Header from 'app/modules/layout/components/Header';
 import Footer from 'app/modules/layout/components/Footer';

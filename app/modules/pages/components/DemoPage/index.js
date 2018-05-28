@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Helmet } from 'react-helmet';
 
-import { bem } from 'app/utils/bem';
+import { bem } from 'app/libs/bem';
 
 import DefaultLayout from 'app/modules/layout/components/DefaultLayout';
 

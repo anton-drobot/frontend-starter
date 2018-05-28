@@ -2,7 +2,7 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 
 import { URL_PROVIDER } from 'framework/Providers/types';
-import { bem, mix } from 'app/utils/bem';
+import { bem, mix } from 'app/libs/bem';
 import { HOME_PAGE } from 'app/routes';
 
 import Link from 'app/modules/core/components/Link';

@@ -3,7 +3,7 @@ import pathToRegexp from 'path-to-regexp';
 import { serializable } from 'serializr';
 
 import { ENV_PROVIDER, STORE_PROVIDER, URL_PROVIDER } from 'framework/Providers/types';
-import { createHistory } from 'framework/utils/browserHistory';
+import { createHistory } from 'framework/libs/browserHistory';
 
 const URL = global.Container.make(URL_PROVIDER);
 const Env = global.Container.make(ENV_PROVIDER);

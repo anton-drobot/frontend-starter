@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
-import { bem } from 'app/utils/bem';
+import { bem } from 'app/libs/bem';
 
 import Logotype from 'app/modules/layout/components/Logotype';
 import Navigation from 'app/modules/layout/components/Navigation';

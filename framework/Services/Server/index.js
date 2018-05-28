@@ -13,7 +13,7 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackConfig from 'webpack.config';
 
-import { normalizeError } from '../../utils/errors';
+import { normalizeError } from '../../libs/errors';
 import RuntimeException from '../../Exceptions/RuntimeException';
 
 export default class Server {

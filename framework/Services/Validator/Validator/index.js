@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import camelCase from 'lodash/camelCase';
 import upperFirst from 'lodash/upperFirst';
 import Validations from '../Validations';
-import { traits } from '../../../utils/traits';
+import { traits } from '../../../libs/traits';
 
 @traits(Validations)
 export default class Validator {

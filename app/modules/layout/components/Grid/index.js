@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import { bem, mix } from 'app/utils/bem';
+import { bem, mix } from 'app/libs/bem';
 
 const b = bem('Grid');
 

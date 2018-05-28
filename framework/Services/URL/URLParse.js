@@ -1,6 +1,6 @@
 // @flow
 
-import { queryParse, queryStringify } from '../../utils/url/querystring';
+import { queryParse, queryStringify } from '../../libs/url/querystring';
 import type { LocationInterface } from './LocationInterface';
 
 /**

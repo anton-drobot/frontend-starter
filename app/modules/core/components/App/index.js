@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Loadable from 'react-loadable';
 
-import { bem } from 'app/utils/bem';
+import { bem } from 'app/libs/bem';
 import { HOME_PAGE, DEMO_PAGE } from 'app/routes';
 
 import Router from 'app/modules/core/components/Router';

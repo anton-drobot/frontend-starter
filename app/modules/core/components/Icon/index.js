@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 
 import { URL_PROVIDER } from 'framework/Providers/types';
-import { bem, mix } from 'app/utils/bem';
+import { bem, mix } from 'app/libs/bem';
 
 const URL = global.Container.make(URL_PROVIDER);
 const b = bem('Icon');

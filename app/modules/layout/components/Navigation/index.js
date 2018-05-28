@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
 import { URL_PROVIDER } from 'framework/Providers/types';
-import { bem } from 'app/utils/bem';
+import { bem } from 'app/libs/bem';
 import { HOME_PAGE, DEMO_PAGE } from 'app/routes';
 
 import Link from 'app/modules/core/components/Link';
