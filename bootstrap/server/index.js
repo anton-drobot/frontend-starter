@@ -20,9 +20,10 @@ import URLProvider from 'framework/Providers/URLProvider';
  */
 export default async function start() {
     try {
-        global.Container = new Container();
+        const iocContainer = new Container();
+        global.Container = iocContainer;
 
-        await new Registrar(global.Container)
+        await new Registrar(iocContainer)
             .register([
                 // Common Providers
                 ConfigProvider,
@@ -42,7 +43,7 @@ export default async function start() {
 
         const { default: init } = await import('bootstrap/server/init');
 
-        await init();
+        await init(iocContainer);
     } catch (error) {
         console.error(error);
     }

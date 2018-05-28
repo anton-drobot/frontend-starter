@@ -10,17 +10,21 @@ import App from 'app/modules/core/components/App';
 
 /**
  * Initialize application.
+ *
+ * @param {Container} iocContainer
+ *
+ * @return {Promise<void>}
  */
-export default async function init() {
+export default async function init(iocContainer) {
     await Loadable.preloadReady();
 
-    const StoreCollection = global.Container.make(STORE_COLLECTION_PROVIDER);
+    const StoreCollection = iocContainer.make(STORE_COLLECTION_PROVIDER);
 
     /**
      * Register application.
      */
-    await registerApp();
-    await onRequest();
+    await registerApp(iocContainer);
+    await onRequest(iocContainer);
 
     const store = StoreCollection.store();
     store.router.go(window.location.href, { replace: true });

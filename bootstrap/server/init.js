@@ -23,13 +23,17 @@ import serverConfig from 'config/server';
 
 /**
  * Initialize application.
+ *
+ * @param {Container} iocContainer
+ *
+ * @return {Promise<void>}
  */
-export default async function init() {
-    const Config = global.Container.make(CONFIG_PROVIDER);
-    const Env = global.Container.make(ENV_PROVIDER);
-    const Router = global.Container.make(ROUTER_PROVIDER);
-    const Server = global.Container.make(SERVER_PROVIDER, { Router });
-    const StoreCollection = global.Container.make(STORE_COLLECTION_PROVIDER);
+export default async function init(iocContainer) {
+    const Config = iocContainer.make(CONFIG_PROVIDER);
+    const Env = iocContainer.make(ENV_PROVIDER);
+    const Router = iocContainer.make(ROUTER_PROVIDER);
+    const Server = iocContainer.make(SERVER_PROVIDER, { Router });
+    const StoreCollection = iocContainer.make(STORE_COLLECTION_PROVIDER);
 
     Config.register('server', serverConfig);
 
@@ -41,10 +45,10 @@ export default async function init() {
     /**
      * Register application on each request.
      */
-    await registerApp();
+    await registerApp(iocContainer);
 
     Router.match(['GET', 'HEAD', 'POST'], '(.*)', async (context) => {
-        await onRequest();
+        await onRequest(iocContainer);
 
         const modules = [];
         const store = StoreCollection.store();

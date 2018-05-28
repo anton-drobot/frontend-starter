@@ -2,13 +2,13 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 
 import { URL_PROVIDER } from 'framework/Providers/types';
+
 import { bem, mix } from 'app/libs/bem';
 import { HOME_PAGE } from 'app/routes';
 
 import Link from 'app/modules/core/components/Link';
 import Icon from 'app/modules/core/components/Icon';
 
-const URL = global.Container.make(URL_PROVIDER);
 const b = bem('Logotype');
 
 function Logotype(props) {
@@ -18,6 +18,7 @@ function Logotype(props) {
         ...restProps
     } = props;
 
+    const URL = this.app.make(URL_PROVIDER);
     const icon = (<Icon glyph="logotype" className={b('image')} />);
     let content = icon;
 

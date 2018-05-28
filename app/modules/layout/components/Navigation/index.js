@@ -2,17 +2,19 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
 import { URL_PROVIDER } from 'framework/Providers/types';
+
 import { bem } from 'app/libs/bem';
 import { HOME_PAGE, DEMO_PAGE } from 'app/routes';
 
 import Link from 'app/modules/core/components/Link';
 
-const URL = global.Container.make(URL_PROVIDER);
 const b = bem('Navigation');
 
 @observer
 export default class Navigation extends Component {
     items() {
+        const URL = this.app.make(URL_PROVIDER);
+
         return [
             { path: (new URL).makeApp(HOME_PAGE), title: 'Найти квартиру' },
             { path: (new URL).makeApp(DEMO_PAGE), title: 'Демо-страница' },

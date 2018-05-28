@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
     MODULE_COLLECTION_PROVIDER,
     STORE_COLLECTION_PROVIDER,
@@ -11,11 +13,29 @@ import filesConfig from 'config/files';
 import modules from 'app/modules';
 import * as ROUTES from 'app/routes';
 
-export async function registerApp() {
-    const ModuleCollection = global.Container.make(MODULE_COLLECTION_PROVIDER);
-    const StoreCollection = global.Container.make(STORE_COLLECTION_PROVIDER);
-    const Logger = global.Container.make(LOGGER_PROVIDER, { prefix: 'bootstrap/app' });
-    const Config = global.Container.make(CONFIG_PROVIDER);
+/**
+ * Add "app" property to React Component.
+ *
+ * @param {Container} iocContainer
+ */
+function modifyReactComponent(iocContainer) {
+    React.Component.prototype.app = {
+        make: iocContainer.make.bind(iocContainer)
+    };
+}
+
+/**
+ * @param {Container} iocContainer
+ *
+ * @return {Promise<void>}
+ */
+export async function registerApp(iocContainer) {
+    modifyReactComponent(iocContainer);
+
+    const ModuleCollection = iocContainer.make(MODULE_COLLECTION_PROVIDER);
+    const StoreCollection = iocContainer.make(STORE_COLLECTION_PROVIDER);
+    const Logger = iocContainer.make(LOGGER_PROVIDER, { prefix: 'bootstrap/app' });
+    const Config = iocContainer.make(CONFIG_PROVIDER);
 
     Config.register('app', appConfig);
     Config.register('files', filesConfig);
@@ -49,10 +69,15 @@ export async function registerApp() {
     }
 }
 
-export async function onRequest() {
-    const ModuleCollection = global.Container.make(MODULE_COLLECTION_PROVIDER);
-    const StoreCollection = global.Container.make(STORE_COLLECTION_PROVIDER);
-    const Logger = global.Container.make(LOGGER_PROVIDER, { prefix: 'bootstrap/app' });
+/**
+ * @param {Container} iocContainer
+ *
+ * @return {Promise<void>}
+ */
+export async function onRequest(iocContainer) {
+    const ModuleCollection = iocContainer.make(MODULE_COLLECTION_PROVIDER);
+    const StoreCollection = iocContainer.make(STORE_COLLECTION_PROVIDER);
+    const Logger = iocContainer.make(LOGGER_PROVIDER, { prefix: 'bootstrap/app' });
 
     /**
      * Boot modules on each request.

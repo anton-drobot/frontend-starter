@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import { URL_PROVIDER } from 'framework/Providers/types';
 import { bem, mix } from 'app/libs/bem';
 
-const URL = global.Container.make(URL_PROVIDER);
 const b = bem('Icon');
 
 function Icon(props) {
@@ -14,6 +13,7 @@ function Icon(props) {
         ...restProps
     } = props;
 
+    const URL = this.app.make(URL_PROVIDER);
     const link = (new URL).makeApp(`/assets/images/sprite.svg#icon-${glyph}`);
 
     return (
