@@ -153,3 +153,4 @@ fabric.properties
 
 # Application
 build/
+static/assets/
