@@ -24,7 +24,7 @@ function Loading(props) {
 
 const LoadableHomePage = Loadable({
     loader: () => import(
-        /* webpackMode: "lazy-once" */
+        /* webpackMode: "lazy" */
         /* webpackChunkName: "home-page" */
         'app/modules/pages/components/HomePage'
     ),
@@ -35,7 +35,7 @@ const LoadableHomePage = Loadable({
 
 const LoadableDemoPage = Loadable({
     loader: () => import(
-        /* webpackMode: "lazy-once" */
+        /* webpackMode: "lazy" */
         /* webpackChunkName: "demo-page" */
         'app/modules/pages/components/DemoPage'
     ),
@@ -46,8 +46,8 @@ const LoadableDemoPage = Loadable({
 
 const LoadableNotFoundPage = Loadable({
     loader: () => import(
-        /* webpackMode: "lazy-once" */
-        /* webpackChunkName: "not-found" */
+        /* webpackMode: "lazy" */
+        /* webpackChunkName: "not-found-page" */
         'app/modules/pages/components/NotFoundPage'
     ),
     loading: Loading,

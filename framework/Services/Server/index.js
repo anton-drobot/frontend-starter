@@ -9,7 +9,8 @@ import escape from 'lodash/escape';
 import Loadable from 'react-loadable';
 
 import webpack from 'webpack';
-import { devMiddleware } from 'koa-webpack-middleware';
+//import { devMiddleware } from 'koa-webpack-middleware';
+import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackConfig from 'webpack.config';
 
 import { normalizeError } from '../../utils/errors';
@@ -59,11 +60,11 @@ export default class Server {
         if (this._env.isDevelopment) {
             const compiler = webpack(webpackConfig);
 
-            this._appInstance.use(devMiddleware(compiler, {
+            this._appInstance.use(this._webpackDevMiddleware(compiler, {
                 noInfo: true,
                 lazy: false,
                 publicPath: webpackConfig.output.publicPath,
-                stats: 'errors-only',
+                stats: webpackConfig.stats,
             }));
         }
 
@@ -78,6 +79,30 @@ export default class Server {
 
         this._appInstance.use(this.handle.bind(this));
     };
+
+    _webpackDevMiddleware(compiler, options) {
+        const expressMiddleware = webpackDevMiddleware(compiler, options);
+
+        async function middleware(ctx, next) {
+            await expressMiddleware(ctx.req, {
+                end(content) {
+                    ctx.body = content;
+                },
+                setHeader(name, value) {
+                    ctx.set(name, value);
+                }
+            }, next);
+        }
+
+        middleware.close = expressMiddleware.close;
+        middleware.context = expressMiddleware.context;
+        middleware.fileSystem = expressMiddleware.fileSystem;
+        middleware.getFilenameFromUrl = expressMiddleware.getFilenameFromUrl;
+        middleware.invalidate = expressMiddleware.invalidate;
+        middleware.waitUntilValid = expressMiddleware.waitUntilValid;
+
+        return middleware;
+    }
 
     async _generateNonce(context, next) {
         context.res.nonce = uuid();

@@ -5,10 +5,6 @@ const URL = global.Container.make(URL_PROVIDER);
 /**
  * Page layout.
  *
- * Note that the path to the css-files is formed without a `makeApp` method,
- * because the webpack duplicates css-files in the code, when it starts working with the code splitting.
- * Because the actual path is not equal to the webpack configuration "output.publicPath".
- *
  * @param {Object} context
  * @param {String} markup
  * @param {Object} helmet
@@ -29,7 +25,8 @@ export default function layout(context, markup, helmet, bundles, StoreCollection
                 ${helmet.title.toString()}
                 ${helmet.meta.toString()}
                 <link rel="stylesheet" href="${(new URL).makeApp('/assets/css/app.chunk.css')}">
-                ${styles.map(({ file }) => `<link rel="stylesheet" href="/assets/${file}">`).join()}
+                <link rel="stylesheet" href="${(new URL).makeApp('/assets/css/common.chunk.css')}">
+                ${styles.map(({ file }) => `<link rel="stylesheet" href="${(new URL).makeApp(`/assets/${file}`)}">`).join()}
                 ${helmet.link.toString()}
             </head>
             <body ${helmet.bodyAttributes.toString()}>
@@ -40,6 +37,7 @@ export default function layout(context, markup, helmet, bundles, StoreCollection
                 </script>
                 <script src="${(new URL).makeApp('/assets/js/manifest.js')}"></script>
                 <script src="${(new URL).makeApp('/assets/js/vendor.chunk.js')}"></script>
+                <script src="${(new URL).makeApp('/assets/js/common.chunk.js')}"></script>
                 ${scripts.map(({ file }) => `<script src="${(new URL).makeApp(`/assets/${file}`)}"></script>`).join()}
                 <script src="${(new URL).makeApp('/assets/js/app.chunk.js')}"></script>
             </body>

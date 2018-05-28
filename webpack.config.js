@@ -13,6 +13,8 @@ const postcssFlexbugsFixes = require('postcss-flexbugs-fixes');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
 
+const appConfig = require('./config/app');
+
 const env = process.env.NODE_ENV;
 const isDev = env === 'development';
 
@@ -29,7 +31,7 @@ module.exports = {
         app: path.join(__dirname, 'bootstrap', 'client', 'index.js')
     },
     output: {
-        publicPath: '/assets/',
+        publicPath: `${appConfig.baseUrl}assets/`,
         path: path.join(__dirname, 'static', 'assets'),
         filename: 'js/[name].js',
         chunkFilename: 'js/[name].chunk.js'
@@ -47,10 +49,30 @@ module.exports = {
     profile: true,
     devtool: isDev ? 'cheap-source-map' : 'source-map',
     stats: {
+        // Remove asset Information
         assets: false,
+        // Remove build date and time information
+        builtAt: false,
+        // Remove children information
+        children: false,
+        // Remove chunk information (setting this to `false` allows for a less verbose output)
+        chunks: false,
+        // Do not show the entry points with the corresponding bundles
+        entrypoints: false,
+        // Add errors
+        errors: true,
+        // Add details to errors (like resolving log)
+        errorDetails: true,
+        // Remove the hash of the compilation
         hash: false,
+        // Remove built modules information
+        modules: false,
+        // Add timing information
+        timings: true,
+        // Remove webpack version information
         version: false,
-        chunks: false
+        // Add warnings
+        warnings: true
     },
     module: {
         rules: [
@@ -179,12 +201,17 @@ module.exports = {
         return plugins;
     })(),
     optimization: {
+        occurrenceOrder: true,
         splitChunks: {
             cacheGroups: {
                 vendor: {
                     test: /[\\/]node_modules[\\/]/,
                     name: 'vendor',
                     chunks: 'all'
+                },
+                common: {
+                    name: 'common',
+                    minChunks: 2
                 }
             }
         },
